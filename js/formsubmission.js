@@ -2,12 +2,18 @@
 // ACC Access Request form
 
 async function checkSelectedOptions() {
+  const projectDropdown = document.getElementById('ACC_project_input');
   const FirstNameInput = document.getElementById('ACC_first_6');
   const LastNameInput = document.getElementById('ACC_last_6');
   const EmailInput = document.getElementById('ACC_input_7');
   const sectorDropdown = document.getElementById('ACC_input_3');
   const marketDropdown = document.getElementById('ACC_input_4');
   const roleDropdown = document.getElementById('ACC_input_5');
+
+  if (projectDropdown.value === "") {
+    alert("Please select a project from the dropdown.");
+    return
+  }
 
   if (FirstNameInput.value === "") {
     alert("Please enter your first name.");
@@ -38,7 +44,12 @@ async function checkSelectedOptions() {
     alert("Please select an option from the role dropdown.");
     return
   }
-  postUserToSP()
+  response = await postUserToSP()
+  if(response.status === 202){
+    alert("Access Request Sucussfully Submitted")
+  }else{
+    alert("Access Request was not Submitted")
+  }
 }
 
 async function postUserToSP(){
@@ -70,6 +81,7 @@ async function postUserToSP(){
   //console.log(apiUrl)
   console.log(requestOptions)
   signedURLData = await fetch(apiUrl,requestOptions)
+  console.log(signedURLData)
 
 
 

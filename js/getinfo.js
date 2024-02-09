@@ -40,6 +40,7 @@ async function listProjects(){
   sessionStorage.setItem(ProjectList,JSON.stringify(ProjectList));
 
   const projectDropdown = document.getElementById('ACC_project_input');
+  projectDropdown.innerHTML = '<option value=""></option>'
   ProjectList.forEach(project => {
     const option = document.createElement('option');
     option.text = project.ProjectName;
@@ -75,10 +76,10 @@ function getProjectDetails(){
     fetch(apiUrl_getProjectDetails)
       .then(response => response.json())
       .then(data => {
-        //console.log(data);
+        console.log(data);
         let projectdetails = []
         for (let i= 0; i < data.length; i++) {
-          if (data[i].ProjectName===sessionStorage.getItem('selectedProjectName')) {
+          if (data[i].ProjectID===sessionStorage.getItem('selectedProjectID')) {
             projectdetails = [...projectdetails, data[i]];
           }
         }
