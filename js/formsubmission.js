@@ -47,12 +47,14 @@ async function checkSelectedOptions() {
   response = await postUserToSP()
   if(response.status === 202){
     alert("Access Request Sucussfully Submitted")
-    document.getElementById("ACC_Access_Request_Form").reset()
+    resetForm()
   }else{
     alert("Access Request was not Submitted")
   }
 }
-
+function resetForm() {
+  document.getElementById("ACC_Access_Request_Form").reset()
+}
 async function postUserToSP(){
 
   const bodyData = {
