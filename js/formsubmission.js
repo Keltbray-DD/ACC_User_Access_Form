@@ -47,6 +47,7 @@ async function checkSelectedOptions() {
   response = await postUserToSP()
   if(response.status === 202){
     alert("Access Request Sucussfully Submitted")
+    document.getElementById("ACC_Access_Request_Form").reset()
   }else{
     alert("Access Request was not Submitted")
   }
