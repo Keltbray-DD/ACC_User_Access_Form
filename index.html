@@ -1,0 +1,167 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/getinfo.js"></script>
+    <script src="js/formsubmission.js"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link rel="icon" href="./assets/media/Keltbray-logo_single.png" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <title>Digital Delivery Hub - ACC Access Request Form</title>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-section">
+            <img alt="" id="headerlogo" class="logo_H" src="./assets/media/Keltbray-logo_single.png">
+            <h2>Keltbray <br>DD Hub</h2>
+        </div>
+        <div class="header-section">
+            <h1>ACC Access Request Form</h1>
+        </div>
+        <div class="header-section">
+            <h3></h3>
+        </div>
+    </header>
+
+    <main>
+
+    <form class="" id="ACC_FileNo_Generator" >
+      <div class="form-container">
+        <div class="header-text httal htvam">
+          <h2 id="header_1" class="form-header" data-component="header">Project Selection</h2>
+        </div>
+        <label class="form-label" id="label_3" for="ACC_project_input" aria-hidden="false"> Select a project from the dropdown below </label>
+          <div id="cid_3" class="form-input-wide" data-layout="half">
+            <select class="form-dropdown" id="ACC_project_input" name="Sector" data-component="Sector" onchange="getProjectDetails()">
+            </select>
+          </div>
+          <script>
+            let projectDropdown = document.getElementById('ACC_project_input');
+            
+            projectDropdown.addEventListener('change', function() {
+              let selectedProjectNameOption = projectDropdown.options[projectDropdown.selectedIndex].innerText;
+              sessionStorage.setItem('selectedProjectName', selectedProjectNameOption);
+
+              let selectedProjectIDOption = projectDropdown.value;
+              sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
+
+              console.log(selectedProjectNameOption,selectedProjectIDOption)
+              getProjectDetails(projectListDetails)
+            });
+          </script>
+      </div>
+        <div class="form-group">
+          <ul class="form-container">
+            <li id="cid_1" class="form-input-wide" data-type="control_head">
+                <div class="header-text httal htvam">
+                  <h2 id="header_2" class="form-header" data-component="header">Access Request Form</h2>
+                </div>
+            </li>
+            <li class="form-line" data-type="control_fullname" id="id_6">
+              <div id="cid_6" class="form-input-wide" data-layout="full">
+                <div class="form-details" data-wrapper-react="true">
+                  <span class="form-input-half" data-input-type="first">
+                    <label class="form-label-half" for="ACC_first_6" id="sublabel_6_first" aria-hidden="false">First Name</label>
+                    <input type="text" id="ACC_first_6" name="first name" class="form-textbox " data-defaultvalue="" autocomplete="section-input_6 given-name" size="10" value="" data-component="first" aria-labelledby="label_6 sublabel_6_first">
+
+                  </span>
+                  <span class="form-input-half" data-input-type="last">
+                    <label class="form-label-half" for="ACC_last_6" id="sublabel_6_last" aria-hidden="false">Last Name</label>
+                    <input type="text" id="ACC_last_6" name="last name" class="form-textbox" data-defaultvalue="" autocomplete="section-input_6 family-name" size="15" value="" data-component="last" aria-labelledby="label_6 sublabel_6_last">
+
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="form-line" data-type="control_email" id="id_7"><label class="form-label form-label-top form-label-auto" id="label_7" for="ACC_input_7" aria-hidden="false"> Email </label>
+              <div id="cid_7" class="form-input-wide" data-layout="half">
+                <span class="form-sub-label-container" >
+                  <input type="email" id="ACC_input_7" name="q7_email" class="form-textbox" data-defaultvalue="" autocomplete="section-input_7 email" value="" data-component="email" aria-labelledby="label_7 sublabel_input_7"><label class="form-label" for="input_7" id="sublabel_input_7" aria-hidden="false">example@example.com</label></span> </div>
+            </li>
+            <li class="form-line" data-type="control_dropdown" id="id_3"><label class="form-label" id="label_3" for="ACC_input_3" aria-hidden="false"> Please select what Sector you belong to </label>
+              <div id="cid_3" class="form-input-wide" data-layout="half">
+                <select class="form-dropdown" id="ACC_input_3" name="Sector" data-component="Sector">
+                </select>
+              </div>
+                <script>
+                  var arr = ["","Infrastructure"];
+                  var options="";
+                  arr.map((op,i)=>{
+                      options+=`<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`
+                  })
+                  document.getElementById("ACC_input_3").innerHTML=options;
+                </script>
+            </li>
+            <li class="form-line" data-type="control_dropdown" id="id_4"><label class="form-label" id="label_4" for="ACC_input_4" aria-hidden="false"> Please select what Market you belong to </label>
+              <div id="cid_4" class="form-input-wide" data-layout="half">
+                <select class="form-dropdown" id="ACC_input_4" name="Market" data-component="Market" onclick="filterRoles()">
+                </select> </div>
+                <script>
+                  var arr = ["","Highways","Energy","Rail"];
+                  var options="";
+                  arr.map((op,i)=>{
+                      options+=`<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`
+                  })
+                  document.getElementById("ACC_input_4").innerHTML=options;
+                </script>
+            </li>
+            <li class="form-line" data-type="control_dropdown" id="id_5"><label class="form-label" id="label_5" for="ACC_input_5" aria-hidden="false"> Please select what role you require for the project</label>
+              <div id="cid_5" class="form-input-wide" data-layout="half">
+                <select class="form-dropdown" id="ACC_input_5" name="ProjectRole" data-component="ProjectRole">
+
+                </select> </div>
+                <script>
+                  var rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
+                  console.log(rolesData);
+                  const marketDropdown = document.getElementById('ACC_input_4');
+                  const roleDropdown = document.getElementById('ACC_input_5');
+                  
+                    // Function to filter roles based on selected market
+                  function filterRoles() {
+                      const selectedMarket = marketDropdown.value;
+                      
+                      // Clear existing options
+                      roleDropdown.innerHTML = '<option value=""></option>';
+
+                      const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
+                      
+                      console.log(filteredRoles);
+                      // Populate the role dropdown with filtered roles
+                      filteredRoles.forEach(role => {
+                        const option = document.createElement('option');
+                        option.value = role.Role;
+                        option.text = role.Role;
+                        roleDropdown.add(option);
+                      });
+                    }
+                  getProjectRoles()
+                  filterRoles();
+
+                  //rolesData.map((op,i)=>{
+                      //options+=`<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`
+                  //})
+                  //document.getElementById("ACC_input_5").innerHTML=options;
+                </script>
+            </li>
+            <div id="cid_2" class="form-input-wide" data-layout="full">
+              <div data-align="auto" class="form-buttons-wrapper form-buttons-auto   jsTest-button-wrapperField">
+                <button type="button" id="ACC_Request_Form_btn" onclick="checkSelectedOptions()" class="submitButton" >Submit</button>
+              </div>
+            </div>
+          </ul>
+
+
+        </div>
+      </form>
+
+    </main>
+    <script>
+
+    </script>
+</body>
+</html>

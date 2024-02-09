@@ -1,0 +1,194 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel="stylesheet" href="../Assets/css/forms.css">
+    <link rel="stylesheet" href="../Assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="../Assets/media/Keltbray-logo_single.png" type="image/x-icon">
+    <link href="https://unpkg.com/css.gg@2.0.0/icons/css/menu.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../js/formsubmission.js"></script>
+    <script src="../js/getinfo.js"></script>
+
+    <title>Peterhead Project Portal - ACC Access</title>
+
+</head>
+
+<body class="container" onload="getProjectDetails(); getProjectRoles()">
+  <header class="wrapperheader">
+    <div class="colheader">
+      <div class="column left">
+        <img alt="" onclick="openNav()" id="headerlogo" class="logoH" src="../Assets/media/Keltbray logo_Main_min clear space.png">
+      </div>
+      <div class="column center">
+        <h1>Peterhead Project Portal</h1>
+        <h2>Requesting ACC Access</h2>
+      </div>
+      <div class="column right">
+        <i onclick="openNav()" class="gg-menu-grid-r"></i>
+      </div>
+        <!-- Side Bar -->
+      <div>
+        <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+          <a href="../pages/home.html">Home</a>
+          <a href="../pages/projectresources.html">Project Resources</a>
+          <a href="../pages/dashboards.html">Dashboards</a>
+          <a href="../pages/inductions.html">Inductions</a>
+          <a href="../pages/sitenoticeboard.html">Site Notice Board</a>
+          <a href="../pages/training.html">Training</a>
+          <a onclick="openInNewTab('//acc.autodesk.eu/build/forms/projects/1aa6e16c-790a-4d01-9ec0-76b4f6d2c240/field-reports/all')">Site Forms</a>
+          <a href="../pages/faqs.html">FAQs</a>
+          <a href="../pages/lessonslearnt.html">Lessons Learnt</a>
+          <a href="../pages/feedback.html">Feedback</a>
+        </div>
+        <script>
+          /* Set the width of the side navigation to 250px */
+          function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+          }
+          function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+          }
+      
+          /* Set the width of the side navigation to 0 */
+          function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+          }
+          window.addEventListener('DOMContentLoaded', function() {
+            function updateImage() {
+                var screenWidth = window.innerWidth;
+                var imageElement = document.getElementById('headerlogo');
+
+                if (screenWidth < 700) {
+                    imageElement.src = "../Assets/media/Keltbray-logo_single.png";
+                    imageElement.alt = 'Small Image';
+                } else {
+                    imageElement.src = "../Assets/media/Keltbray logo_Main_min clear space.png";
+                    imageElement.alt = 'Large Image';
+                }
+            }
+
+            // Initial call
+            updateImage();
+
+            // Add event listener for window resize
+            window.addEventListener('resize', updateImage);
+          });
+        </script>
+      </div>
+    </div>
+
+</header>
+  <section class="formcontainer">
+       <form class="jotform-form" id="ACCForm" >
+        <div class="form-all">
+          <ul class="form-section page-section">
+            <li id="cid_1" class="form-input-wide" data-type="control_head">
+              <div class="form-header-group  header-large">
+                <div class="header-text httal htvam">
+                  <h1 id="header_1" class="form-header" data-component="header">ACC Access Request Form</h1>
+                </div>
+              </div>
+            </li>
+            <li class="form-line" data-type="control_fullname" id="id_6"><label class="form-label form-label-top form-label-auto" id="label_6" for="first_6" aria-hidden="false"> Name </label>
+              <div id="cid_6" class="form-input-wide" data-layout="full">
+                <div data-wrapper-react="true">
+                  <span class="form-sub-label-container" data-input-type="first">
+                    <input type="text" id="ACC_first_6" name="first name" class="form-textbox" data-defaultvalue="" autocomplete="section-input_6 given-name" size="10" value="" data-component="first" aria-labelledby="label_6 sublabel_6_first">
+                    <label class="form-sub-label" for="ACC_first_6" id="sublabel_6_first" aria-hidden="false">First Name</label>
+                  </span>
+                  <span class="form-sub-label-container" data-input-type="last">
+                    <input type="text" id="ACC_last_6" name="last name" class="form-textbox" data-defaultvalue="" autocomplete="section-input_6 family-name" size="15" value="" data-component="last" aria-labelledby="label_6 sublabel_6_last">
+                    <label class="form-sub-label" for="ACC_last_6" id="sublabel_6_last" aria-hidden="false">Last Name</label>
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li class="form-line" data-type="control_email" id="id_7"><label class="form-label form-label-top form-label-auto" id="label_7" for="ACC_input_7" aria-hidden="false"> Email </label>
+              <div id="cid_7" class="form-input-wide" data-layout="half">
+                <span class="form-sub-label-container" >
+                  <input type="email" id="ACC_input_7" name="q7_email" class="form-textbox validate[Email]" data-defaultvalue="" autocomplete="section-input_7 email" size="310" value="" data-component="email" aria-labelledby="label_7 sublabel_input_7"><label class="form-sub-label" for="input_7" id="sublabel_input_7" aria-hidden="false">example@example.com</label></span> </div>
+            </li>
+            <li class="form-line" data-type="control_dropdown" id="id_3"><label class="form-label form-label-top form-label-auto" id="label_3" for="ACC_input_3" aria-hidden="false"> Please select what Sector you belong to </label>
+              <div id="cid_3" class="form-input-wide" data-layout="half">
+                <select class="form-dropdown" id="ACC_input_3" name="Sector" data-component="Sector">
+                </select>
+              </div>
+                <script>
+                  var arr = ["Please Select","Infrastructure"];
+                  var options="";
+                  arr.map((op,i)=>{
+                     options+=`<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`
+                  })
+                  document.getElementById("ACC_input_3").innerHTML=options;
+               </script>
+            </li>
+            <li class="form-line" data-type="control_dropdown" id="id_4"><label class="form-label form-label-top form-label-auto" id="label_4" for="ACC_input_4" aria-hidden="false"> Please select what Market you belong to </label>
+              <div id="cid_4" class="form-input-wide" data-layout="half">
+                <select class="form-dropdown" id="ACC_input_4" name="Market" data-component="Market" onclick="filterRoles()">
+                </select> </div>
+                <script>
+                  var arr = ["Please Select","Highways","Energy","Rail"];
+                  var options="";
+                  arr.map((op,i)=>{
+                     options+=`<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`
+                  })
+                  document.getElementById("ACC_input_4").innerHTML=options;
+               </script>
+            </li>
+            <li class="form-line" data-type="control_dropdown" id="id_5"><label class="form-label form-label-top form-label-auto" id="label_5" for="ACC_input_5" aria-hidden="false"> Please select what role you require for the project</label>
+              <div id="cid_5" class="form-input-wide" data-layout="half">
+                <select class="form-dropdown" id="ACC_input_5" name="ProjectRole" data-component="ProjectRole">
+
+                </select> </div>
+                <script>
+                  var rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
+                  console.log(rolesData);
+                  const marketDropdown = document.getElementById('ACC_input_4');
+                  const roleDropdown = document.getElementById('ACC_input_5');
+                  
+                    // Function to filter roles based on selected market
+                  function filterRoles() {
+                      const selectedMarket = marketDropdown.value;
+                      
+                      // Clear existing options
+                      roleDropdown.innerHTML = '<option value="All">Please Select</option>';
+
+                      const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
+                     
+                      console.log(filteredRoles);
+                      // Populate the role dropdown with filtered roles
+                      filteredRoles.forEach(role => {
+                        const option = document.createElement('option');
+                        option.value = role.Role;
+                        option.text = role.Role;
+                        roleDropdown.add(option);
+                      });
+                    }
+                  filterRoles();
+
+                  //rolesData.map((op,i)=>{
+                     //options+=`<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`
+                  //})
+                  //document.getElementById("ACC_input_5").innerHTML=options;
+               </script>
+            </li>
+          </ul>
+        </div>
+      </form>
+      <div id="cid_2" class="form-input-wide" data-layout="full">
+        <div data-align="auto" class="form-buttons-wrapper form-buttons-auto   jsTest-button-wrapperField">
+          <button type="button" id="ACC_Request_Form_btn"  class="form-submit-button submit-button jf-form-buttons jsTest-submitField">Submit</button>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapperfooter">
+    <img alt="" class="logoF" src="../Assets/media/Keltbray logo_Wht_Wht box_min clear space.png">
+    <h2>Infrastructure PMO</h2>
+  </footer>
+</body>
+
+</html>
