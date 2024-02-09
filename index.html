@@ -83,6 +83,26 @@
                 <span class="form-sub-label-container" >
                   <input type="email" id="ACC_input_7" name="q7_email" class="form-textbox" data-defaultvalue="" autocomplete="section-input_7 email" value="" data-component="email" aria-labelledby="label_7 sublabel_input_7"><label class="form-label" for="input_7" id="sublabel_input_7" aria-hidden="false">example@example.com</label></span> </div>
             </li>
+            <li>
+              <label class="form-label" id="label_company" for="ACC_project_input" aria-hidden="false"> Select your compmay from the dropdown below </label>
+                <div id="cid_company" class="form-input-wide" data-layout="half">
+                  <select class="form-dropdown" id="ACC_company_input" name="Company" data-component="Sector">
+                  </select>
+                </div>
+                <script>
+                  let companyDropdown = document.getElementById('ACC_company_input');
+                  
+                  companyDropdown.addEventListener('change', function() {
+                    let selectedCompanyIDOption = companyDropdown.options[companyDropdown.selectedIndex].value;
+                    sessionStorage.setItem('selectedCompanyID', selectedCompanyIDOption);
+                    let selectedCompanyNameOption = companyDropdown.options[companyDropdown.selectedIndex].innerText;
+                    sessionStorage.setItem('selectedCompanyName', selectedCompanyNameOption);
+
+                    console.log(selectedCompanyNameOption,selectedCompanyIDOption)
+
+                  });
+                </script>
+            </li>
             <li class="form-line" data-type="control_dropdown" id="id_3"><label class="form-label" id="label_3" for="ACC_input_3" aria-hidden="false"> Please select what Sector you belong to </label>
               <div id="cid_3" class="form-input-wide" data-layout="half">
                 <select class="form-dropdown" id="ACC_input_3" name="Sector" data-component="Sector">
@@ -116,31 +136,8 @@
 
                 </select> </div>
                 <script>
-                  var rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
-                  console.log("ACC Roles",rolesData);
-                  const marketDropdown = document.getElementById('ACC_input_4');
-                  const roleDropdown = document.getElementById('ACC_input_5');
-                  
-                    // Function to filter roles based on selected market
-                  function filterRoles() {
-                      const selectedMarket = marketDropdown.value;
-                      
-                      // Clear existing options
-                      roleDropdown.innerHTML = '<option value=""></option>';
 
-                      const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
-                      
-                      //console.log(filteredRoles);
-                      // Populate the role dropdown with filtered roles
-                      filteredRoles.forEach(role => {
-                        const option = document.createElement('option');
-                        option.value = role.Role;
-                        option.text = role.Role;
-                        roleDropdown.add(option);
-                      });
-                    }
-                  getProjectRoles()
-                  filterRoles();
+
 
                   //rolesData.map((op,i)=>{
                       //options+=`<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`

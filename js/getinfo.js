@@ -12,6 +12,9 @@ let ProjectRoles
 let ProjectList =[]
 let ProjectListRaw
 let projectListDetails =[]
+let marketDropdown
+let roleDropdown
+let rolesData
 
 const clientId = "UMPIoFc8iQoJ2eKS6GsJbCGSmMb4s1PY";
 const clientSecret = "3VP1GrzLLvOUoEzu";
@@ -19,9 +22,25 @@ const clientSecret = "3VP1GrzLLvOUoEzu";
 const hub_id = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
 
+//rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
+
+document.addEventListener('DOMContentLoaded', function() {
+  // JavaScript code here
+  marketDropdown = document.getElementById('ACC_input_4');
+  roleDropdown = document.getElementById('ACC_input_5');
+});
+
 
 //getRawProjectList()
-listProjects()
+initalStartUp()
+
+async function initalStartUp(){
+  listProjects()
+
+  rolesData = await getProjectRoles()
+  console.log("ACC Roles",rolesData);
+  filterRoles();
+}
 
 async function listProjects(){
   try{
@@ -36,8 +55,12 @@ async function listProjects(){
       ProjectList.push({'ProjectName':ProjectListRaw.results[i].name,'ProjectID':ProjectListRaw.results[i].id})
     }
   }
+  CompaniesList = await getCompnaies(accessToken)
+
   console.log("Filtered Project List",ProjectList)
   sessionStorage.setItem(ProjectList,JSON.stringify(ProjectList));
+  console.log("Companies List",CompaniesList)
+  sessionStorage.setItem(CompaniesList,JSON.stringify(CompaniesList));
 
   const projectDropdown = document.getElementById('ACC_project_input');
   projectDropdown.innerHTML = '<option value=""></option>'
@@ -47,27 +70,17 @@ async function listProjects(){
     option.value = project.ProjectID;
     projectDropdown.add(option);
   });
+
+  const companyDropdown = document.getElementById('ACC_company_input');
+  companyDropdown.innerHTML = '<option value=""></option>'
+  CompaniesList.forEach(project => {
+    const option = document.createElement('option');
+    option.text = project.name;
+    option.value = project.id;
+    companyDropdown.add(option);
+  });
 }
 
-async function getRawProjectList(){
-  try{
-    projectListDetails = await fetchSPData()
-
-  }catch{
-    console.log("Error")
-  }
-
-}
-async function fetchSPData(){
-  var apiUrl_getProjectDetails = 'https://prod-28.uksouth.logic.azure.com:443/workflows/5bd3209073b748bc8b0089d5a52e5670/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Jyr6aOn2mx8vnBHIhhlJBsJU3d-4-3T2I_WWWBiTUUw';
-  fetch(apiUrl_getProjectDetails)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      return data
-    })
-    .catch(error => console.error('Error fetching data:', error));
-}
 
 function getProjectDetails(){
 
@@ -123,9 +136,9 @@ function getProjectDetails(){
 
 }
 
-function getProjectRoles(){
+async function getProjectRoles(){
       var apiUrl_getProjectRoles = 'https://prod-21.uksouth.logic.azure.com:443/workflows/e56b0f45849e4042bbb0619e6d98048c/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=NyZXTcmNXZbbC5TioPESi5D7nlG0_xvB5jlyeLVVSQ0';
-      fetch(apiUrl_getProjectRoles)
+      data = fetch(apiUrl_getProjectRoles)
         .then(response => response.json())
         .then(data => {
             let projectRoles_Local = []
@@ -139,7 +152,29 @@ function getProjectRoles(){
             return projectRoles_Local
         })
         .catch(error => console.error('Error fetching data:', error));
+        return data
     }
+
+
+  // Function to filter roles based on selected market
+function filterRoles() {
+    //console.log(marketDropdown)
+    const selectedMarket = marketDropdown.value;
+    console.log(selectedMarket)
+    // Clear existing options
+    roleDropdown.innerHTML = '<option value=""></option>';
+
+    const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
+
+    //console.log(filteredRoles);
+    // Populate the role dropdown with filtered roles
+    filteredRoles.forEach(role => {
+      const option = document.createElement('option');
+      option.value = role.Role;
+      option.text = role.Role;
+      roleDropdown.add(option);
+    });
+  }
 
 async function generateTokenAccountRead(clientId,clientSecret){
   const bodyData = {
@@ -212,4 +247,35 @@ async function getProjects(AccessToken){
 
 
   return signedURLData
+  }
+  async function getCompnaies(AccessToken){
+
+    const bodyData = {
+
+        };
+
+    const headers = {
+        'Authorization':"Bearer "+AccessToken,
+        //'Content-Type':'application/json'
+    };
+
+    const requestOptions = {
+        method: 'GET',
+        headers: headers,
+        //body: JSON.stringify(bodyData)
+    };
+
+    const apiUrl = "https://developer.api.autodesk.com/hq/v1/regions/eu/accounts/"+account_id+"/companies";
+    //console.log(apiUrl)
+    //console.log(requestOptions)
+    signedURLData = await fetch(apiUrl,requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            const JSONdata = data
+
+        return JSONdata
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    return signedURLData
   }

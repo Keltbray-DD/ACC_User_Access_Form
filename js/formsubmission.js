@@ -60,6 +60,8 @@ async function postUserToSP(){
   const bodyData = {
         Email: $("#ACC_input_7").val(),
         Name: $("#ACC_first_6").val()+" "+$("#ACC_last_6").val(),
+        firstName:$("#ACC_first_6").val(),
+        lastName:$("#ACC_last_6").val(),
         Sector: $("#ACC_input_3").val(),
         Market: $("#ACC_input_4").val(),
         ProjectRole: $("#ACC_input_5").val(),
@@ -68,6 +70,8 @@ async function postUserToSP(){
         DCEmail: sessionStorage.getItem('DC_Email'),
         Project: sessionStorage.getItem('selectedProjectName'),
         ProjectID: sessionStorage.getItem('selectedProjectID'),
+        Company: sessionStorage.getItem('selectedCompanyName'),
+        CompanyID: sessionStorage.getItem('selectedCompanyID'),
       };
 
   const headers = {
