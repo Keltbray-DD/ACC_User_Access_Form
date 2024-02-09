@@ -117,7 +117,7 @@
                 </select> </div>
                 <script>
                   var rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
-                  console.log(rolesData);
+                  console.log("ACC Roles",rolesData);
                   const marketDropdown = document.getElementById('ACC_input_4');
                   const roleDropdown = document.getElementById('ACC_input_5');
                   
@@ -130,7 +130,7 @@
 
                       const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
                       
-                      console.log(filteredRoles);
+                      //console.log(filteredRoles);
                       // Populate the role dropdown with filtered roles
                       filteredRoles.forEach(role => {
                         const option = document.createElement('option');

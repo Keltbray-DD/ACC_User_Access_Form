@@ -198,7 +198,7 @@ async function getProjects(AccessToken){
 
   const apiUrl = "https://developer.api.autodesk.com/construction/admin/v1/accounts/"+account_id+"/projects";
   //console.log(apiUrl)
-  console.log(requestOptions)
+  //console.log(requestOptions)
   signedURLData = await fetch(apiUrl,requestOptions)
       .then(response => response.json())
       .then(data => {
