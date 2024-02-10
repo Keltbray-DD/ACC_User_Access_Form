@@ -16,9 +16,6 @@ let marketDropdown
 let roleDropdown
 let rolesData
 
-const clientId = "UMPIoFc8iQoJ2eKS6GsJbCGSmMb4s1PY";
-const clientSecret = "3VP1GrzLLvOUoEzu";
-
 const hub_id = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
 
@@ -44,7 +41,7 @@ async function initalStartUp(){
 
 async function listProjects(){
   try{
-    accessToken = await generateTokenAccountRead(clientId,clientSecret)
+    accessToken = await getAccessToken("account:read")
   }catch{
     console.log("Error")
   }
@@ -141,9 +138,10 @@ async function getProjectRoles(){
       data = fetch(apiUrl_getProjectRoles)
         .then(response => response.json())
         .then(data => {
+          //console.log(data)
             let projectRoles_Local = []
             for (let i= 0; i < data.length; i++) {
-              if (data[i].IsRole==="True") {
+              if (data[i].IsRole==="1" && data[i].Required ==="Y") {
                 projectRoles_Local = [...projectRoles_Local, data[i]];
               }
             }
@@ -174,6 +172,39 @@ function filterRoles() {
       option.text = role.Role;
       roleDropdown.add(option);
     });
+  }
+async function getAccessToken(scopeInput){
+
+  const bodyData = {
+      scope: scopeInput,
+      };
+
+  const headers = {
+      'Content-Type':'application/json'
+  };
+
+  const requestOptions = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(bodyData)
+  };
+
+  const apiUrl = "https://prod-18.uksouth.logic.azure.com:443/workflows/d8f90f38261044b19829e27d147f0023/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=-N-bYaES64moEe0gFiP5J6XGoZBwCVZTmYZmUbdJkPk";
+  //console.log(apiUrl)
+  //console.log(requestOptions)
+  signedURLData = await fetch(apiUrl,requestOptions)
+      .then(response => response.json())
+      .then(data => {
+          const JSONdata = data
+
+      //console.log(JSONdata)
+
+      return JSONdata.access_token
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+
+  return signedURLData
   }
 
 async function generateTokenAccountRead(clientId,clientSecret){

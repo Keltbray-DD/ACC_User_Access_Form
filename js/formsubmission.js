@@ -1,6 +1,8 @@
 
 // ACC Access Request form
 
+let searchList =[]
+
 async function checkSelectedOptions() {
   const projectDropdown = document.getElementById('ACC_project_input');
   const FirstNameInput = document.getElementById('ACC_first_6');
@@ -56,7 +58,8 @@ function resetForm() {
   document.getElementById("ACC_Access_Request_Form").reset()
 }
 async function postUserToSP(){
-
+  OCRARole_Local = await searchArray($("#ACC_input_5").val());
+  console.log(OCRARole_Local)
   const bodyData = {
         Email: $("#ACC_input_7").val(),
         Name: $("#ACC_first_6").val()+" "+$("#ACC_last_6").val(),
@@ -65,6 +68,7 @@ async function postUserToSP(){
         Sector: $("#ACC_input_3").val(),
         Market: $("#ACC_input_4").val(),
         ProjectRole: $("#ACC_input_5").val(),
+        OCRARole: OCRARole_Local,
         PMEmail: sessionStorage.getItem('PM_Email'),
         IMEmail: sessionStorage.getItem('IM_Email'),
         DCEmail: sessionStorage.getItem('DC_Email'),
@@ -94,4 +98,23 @@ async function postUserToSP(){
 
 
   return signedURLData
+  }
+
+  async function searchArray(selectedValue) {
+
+    searchList = JSON.parse(sessionStorage.getItem(ProjectRoles))
+    console.log(searchList)
+    //const foundItem = searchList.find(item => item.Role === selectedValue);
+    let foundItem;
+    console.log("selectedValue:",selectedValue)
+    for (let i = 0; i < searchList.length; i++) {
+      if (searchList[i].Role === selectedValue) {
+        foundItem = searchList[i];
+        //break;
+      }
+    }
+    console.log("foundItem:",foundItem)
+    if (foundItem) {
+      return foundItem.OCRARoles;
+    }
   }
