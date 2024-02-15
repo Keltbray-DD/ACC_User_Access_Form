@@ -53,6 +53,7 @@ async function listProjects(){
     }
   }
   CompaniesList = await getCompnaies(accessToken)
+  CompaniesList = CompaniesList.sort((a, b) => a.name.localeCompare(b.name))
 
   console.log("Filtered Project List",ProjectList)
   sessionStorage.setItem(ProjectList,JSON.stringify(ProjectList));
@@ -296,7 +297,7 @@ async function getProjects(AccessToken){
         //body: JSON.stringify(bodyData)
     };
 
-    const apiUrl = "https://developer.api.autodesk.com/hq/v1/regions/eu/accounts/"+account_id+"/companies";
+    const apiUrl = "https://developer.api.autodesk.com/hq/v1/regions/eu/accounts/"+account_id+"/companies?limit=100";
     //console.log(apiUrl)
     //console.log(requestOptions)
     signedURLData = await fetch(apiUrl,requestOptions)
