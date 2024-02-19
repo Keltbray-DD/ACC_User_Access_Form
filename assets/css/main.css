@@ -121,11 +121,6 @@ select {
     background-size: 5px 5px, 5px 5px;
     background-repeat: no-repeat;
 }
-/* Set width of inputs and progress bar */
-select {
-    width: calc(100% - 20px); /* 100% minus the padding */
-    
-    }
 
 /* Style the options */
 option {

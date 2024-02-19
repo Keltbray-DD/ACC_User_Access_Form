@@ -32,8 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
 initalStartUp()
 
 async function initalStartUp(){
-  listProjects()
 
+  await listProjects()
+  checkURL()
   rolesData = await getProjectRoles()
   console.log("ACC Roles",rolesData);
   filterRoles();
@@ -311,3 +312,45 @@ async function getProjects(AccessToken){
 
     return signedURLData
   }
+
+  async function getProjectFromURL(){
+    // Get the URL of the current page
+    var url = window.location.href;
+
+    // Check if the URL contains a parameter named 'id'
+    if (url.indexOf('id=') !== -1) {
+        // Extract the value of the 'id' parameter
+        var id = url.split('id=')[1];
+
+        // Display the extracted ID
+        console.log('Extracted ID:', id);
+        setDefaultSelectedValue(id)
+    } else {
+        console.log('No ID parameter found in the URL');
+    }
+  }
+
+  function checkURL(){
+    // Get the query string portion of the URL
+    var queryString = window.location.search;
+
+    // Check if the query string contains an 'id' parameter
+    if (queryString.includes('id=')) {
+        console.log('The URL contains an Project ID parameter');
+        getProjectFromURL()
+    } else {
+        console.log('The URL does not contain an Project ID parameter');
+    }
+  }
+
+  // Function to set the default selected value
+  function setDefaultSelectedValue(id) {
+    var dropdown = document.getElementById('ACC_project_input');
+    var defaultValue = id; // Replace '456' with the desired default value
+    for (var i = 0; i < dropdown.options.length; i++) {
+        if (dropdown.options[i].value === defaultValue) {
+            dropdown.options[i].selected = true;
+            break;
+        }
+    }
+}
