@@ -95,37 +95,52 @@ function getProjectDetails(){
             projectdetails = [...projectdetails, data[i]];
           }
         }
-        var ProjectName_Local = projectdetails[0].ProjectName;
-        sessionStorage.setItem('ProjectName',ProjectName_Local);
-        //document.getElementById('IMEmail').innerHTML = sessionStorage.getItem('ProjectName');
-        var IM_Email_Local = projectdetails[0].IM;
-        sessionStorage.setItem('IM_Email',IM_Email_Local);
-        //document.getElementById('IMEmail').innerHTML = sessionStorage.getItem('IM_Email');
-        var PM_Email_Local = projectdetails[0].PM;
-        sessionStorage.setItem('PM_Email',PM_Email_Local);
-        //document.getElementById('PMEmail').innerHTML = sessionStorage.getItem('PM_Email');
-        var DC_Email_Local = projectdetails[0].DC;
-        sessionStorage.setItem('DC_Email',DC_Email_Local);
-        //document.getElementById('DCEmail').innerHTML = sessionStorage.getItem('DC_Email');
-        var DM_Email_Local = projectdetails[0].DM;
-        sessionStorage.setItem('DM_Email',DM_Email_Local);
-        //document.getElementById('DMEmail').innerHTML = sessionStorage.getItem(DM_Email);
-        var ADM_Email_Local = projectdetails[0].ADM;
-        sessionStorage.setItem('ADM_Email',ADM_Email_Local);
-        //document.getElementById('ADMEmail').innerHTML = sessionStorage.getItem(ADM_Email);
-        var QM_Email_Local = projectdetails[0].QM;
-        sessionStorage.setItem('QM_Email',QM_Email_Local);
-        //document.getElementById('QMEmail').innerHTML = sessionStorage.getItem(QM_Email);
-        var AQM_Email_Local = projectdetails[0].AQM;
-        sessionStorage.setItem('AQM_Email',AQM_Email_Local);
-        //document.getElementById('AQMEmail').innerHTML = sessionStorage.getItem(AQM_Email);
-        var HM_Email_Local = projectdetails[0].HM;
-        sessionStorage.setItem('HM_Email',HM_Email_Local);
-        //document.getElementById('HMEmail').innerHTML = sessionStorage.getItem(HM_Email);
-        var OM_Email_Local = projectdetails[0].OM;
-        sessionStorage.setItem('OM_Email',OM_Email_Local);
-        //document.getElementById('HMEmail').innerHTML = sessionStorage.getItem(HM_Email);
-        console.log("Project Details List",projectdetails);
+        if(projectdetails.length > 0){
+          var ProjectName_Local = projectdetails[0].ProjectName;
+          sessionStorage.setItem('ProjectName',ProjectName_Local);
+  
+          //document.getElementById('IMEmail').innerHTML = sessionStorage.getItem('ProjectName');
+          var IM_Email_Local = projectdetails[0].IM;
+          sessionStorage.setItem('IM_Email',IM_Email_Local);
+          //document.getElementById('IMEmail').innerHTML = sessionStorage.getItem('IM_Email');
+          var PM_Email_Local = projectdetails[0].PM;
+          sessionStorage.setItem('PM_Email',PM_Email_Local);
+          //document.getElementById('PMEmail').innerHTML = sessionStorage.getItem('PM_Email');
+          var DC_Email_Local = projectdetails[0].DC;
+          sessionStorage.setItem('DC_Email',DC_Email_Local);
+          //document.getElementById('DCEmail').innerHTML = sessionStorage.getItem('DC_Email');
+          var DM_Email_Local = projectdetails[0].DM;
+          sessionStorage.setItem('DM_Email',DM_Email_Local);
+          //document.getElementById('DMEmail').innerHTML = sessionStorage.getItem(DM_Email);
+          var ADM_Email_Local = projectdetails[0].ADM;
+          sessionStorage.setItem('ADM_Email',ADM_Email_Local);
+          //document.getElementById('ADMEmail').innerHTML = sessionStorage.getItem(ADM_Email);
+          var QM_Email_Local = projectdetails[0].QM;
+          sessionStorage.setItem('QM_Email',QM_Email_Local);
+          //document.getElementById('QMEmail').innerHTML = sessionStorage.getItem(QM_Email);
+          var AQM_Email_Local = projectdetails[0].AQM;
+          sessionStorage.setItem('AQM_Email',AQM_Email_Local);
+          //document.getElementById('AQMEmail').innerHTML = sessionStorage.getItem(AQM_Email);
+          var HM_Email_Local = projectdetails[0].HM;
+          sessionStorage.setItem('HM_Email',HM_Email_Local);
+          //document.getElementById('HMEmail').innerHTML = sessionStorage.getItem(HM_Email);
+          var OM_Email_Local = projectdetails[0].OM;
+          sessionStorage.setItem('OM_Email',OM_Email_Local);
+          //document.getElementById('HMEmail').innerHTML = sessionStorage.getItem(HM_Email);
+          console.log("Project Details List",projectdetails);
+        } else{
+          sessionStorage.setItem('IM_Email',"");
+          sessionStorage.setItem('PM_Email',"");
+          sessionStorage.setItem('DC_Email',"");
+          sessionStorage.setItem('DM_Email',"");
+          sessionStorage.setItem('ADM_Email',"");
+          sessionStorage.setItem('QM_Email',"");
+          sessionStorage.setItem('AQM_Email',"");
+          sessionStorage.setItem('HM_Email',"");
+          sessionStorage.setItem('OM_Email',"");
+          console.log("No details found")
+        }
+
 
       })
       .catch(error => console.error('Error fetching data:', error));
@@ -350,6 +365,13 @@ async function getProjects(AccessToken){
     for (var i = 0; i < dropdown.options.length; i++) {
         if (dropdown.options[i].value === defaultValue) {
             dropdown.options[i].selected = true;
+            let selectedProjectNameOption = dropdown.options[dropdown.selectedIndex].innerText;
+            sessionStorage.setItem('selectedProjectName', selectedProjectNameOption);
+
+            let selectedProjectIDOption = dropdown.value;
+            sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
+
+            getProjectDetails()
             break;
         }
     }

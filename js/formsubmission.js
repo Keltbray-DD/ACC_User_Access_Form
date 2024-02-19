@@ -48,7 +48,7 @@ async function checkSelectedOptions() {
   }
   response = await postUserToSP()
   if(response.status === 202){
-    alert("Access Request Sucussfully Submitted")
+    alert("Access Request Successfully Submitted")
     resetForm()
   }else{
     alert("Access Request was not Submitted")
