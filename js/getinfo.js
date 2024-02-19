@@ -25,20 +25,35 @@ document.addEventListener('DOMContentLoaded', function() {
   // JavaScript code here
   marketDropdown = document.getElementById('ACC_input_4');
   roleDropdown = document.getElementById('ACC_input_5');
+
+  loadingScreen = document.getElementById('loadingScreen');
+  // Show the loading screen
+  function showLoadingScreen() {
+      loadingScreen.style.display = 'flex';
+  }
+
+  // Hide the loading screen
+  async function hideLoadingScreen() {
+      loadingScreen.style.display = 'none';
+  }
+  initalStartUp()
+  async function initalStartUp(){
+
+    await listProjects()
+    checkURL()
+    rolesData = await getProjectRoles()
+    console.log("ACC Roles",rolesData);
+    filterRoles();
+    hideLoadingScreen()
+  }
 });
 
 
+
 //getRawProjectList()
-initalStartUp()
 
-async function initalStartUp(){
 
-  await listProjects()
-  checkURL()
-  rolesData = await getProjectRoles()
-  console.log("ACC Roles",rolesData);
-  filterRoles();
-}
+
 
 async function listProjects(){
   try{
