@@ -36,7 +36,7 @@
     <form class="" id="ACC_Access_Request_Form" >
       <div class="form-container">
         <div class="header-text httal htvam">
-          <h2 id="header_1" class="form-header" data-component="header">Project Selection</h2>
+          <h2 id="header_1" class="form-header" data-component="header">Step 1 - Select Project</h2>
         </div>
         <label class="form-label" id="label_0" for="ACC_project_input" aria-hidden="false"> Select a project from the dropdown below </label>
           <div id="cid_0" class="form-input-wide" data-layout="half">
@@ -62,7 +62,7 @@
           <ul class="form-container">
             <li id="cid_1" class="form-input-wide" data-type="control_head">
                 <div class="header-text httal htvam">
-                  <h2 id="header_2" class="form-header" data-component="header">Access Request Form</h2>
+                  <h2 id="header_2" class="form-header" data-component="header">Step 2 - Request User Deatils</h2>
                 </div>
             </li>
             <li class="form-line" data-type="control_fullname" id="id_6">
@@ -86,8 +86,15 @@
                 <span class="form-sub-label-container" >
                   <input type="email" id="ACC_input_7" name="q7_email" class="form-textbox" data-defaultvalue="" autocomplete="section-input_7 email" value="" data-component="email" aria-labelledby="label_7 sublabel_input_7"><label class="form-label" for="input_7" id="sublabel_input_7" aria-hidden="false">example@example.com</label></span> </div>
             </li>
+            </ul>
+            <ul class="form-container">
+              <li id="cid_1" class="form-input-wide" data-type="control_head">
+                <div class="header-text httal htvam">
+                  <h2 id="header_3" class="form-header" data-component="header">Step 3 - Access Details</h2>
+                </div>
+            </li>
             <li>
-              <label class="form-label" id="label_company" for="ACC_project_input" aria-hidden="false"> Select your company from the dropdown below </label>
+              <label class="form-label" id="label_company" for="ACC_project_input" aria-hidden="false"> 1. Select your company from the dropdown below </label>
                 <div id="cid_company" class="form-input-wide" data-layout="half">
                   <select class="form-dropdown" id="ACC_company_input" name="Company" data-component="Sector">
                   </select>
@@ -106,7 +113,7 @@
                   });
                 </script>
             </li>
-            <li class="form-line" data-type="control_dropdown" id="id_3"><label class="form-label" id="label_3" for="ACC_input_3" aria-hidden="false"> Please select what Sector you belong to </label>
+            <li class="form-line" data-type="control_dropdown" id="id_3"><label class="form-label" id="label_3" for="ACC_input_3" aria-hidden="false">2. Please select what Sector you belong to </label>
               <div id="cid_3" class="form-input-wide" data-layout="half">
                 <select class="form-dropdown" id="ACC_input_3" name="Sector" data-component="Sector">
                 </select>
@@ -120,7 +127,7 @@
                   document.getElementById("ACC_input_3").innerHTML=options;
                 </script>
             </li>
-            <li class="form-line" data-type="control_dropdown" id="id_4"><label class="form-label" id="label_4" for="ACC_input_4" aria-hidden="false"> Please select what Market you belong to </label>
+            <li class="form-line" data-type="control_dropdown" id="id_4"><label class="form-label" id="label_4" for="ACC_input_4" aria-hidden="false">3. Please select what Market you belong to </label>
               <div id="cid_4" class="form-input-wide" data-layout="half">
                 <select class="form-dropdown" id="ACC_input_4" name="Market" data-component="Market" onclick="filterRoles()">
                 </select> </div>
@@ -133,7 +140,7 @@
                   document.getElementById("ACC_input_4").innerHTML=options;
                 </script>
             </li>
-            <li class="form-line" data-type="control_dropdown" id="id_5"><label class="form-label" id="label_5" for="ACC_input_5" aria-hidden="false"> Please select what role you require for the project</label>
+            <li class="form-line" data-type="control_dropdown" id="id_5"><label class="form-label" id="label_5" for="ACC_input_5" aria-hidden="false">4. Please select what role you require for the project</label>
               <div id="cid_5" class="form-input-wide" data-layout="half">
                 <select class="form-dropdown" id="ACC_input_5" name="ProjectRole" data-component="ProjectRole">
 
