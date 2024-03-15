@@ -190,20 +190,30 @@ async function getProjectRoles(){
 function filterRoles() {
     //console.log(marketDropdown)
     const selectedMarket = marketDropdown.value;
-    console.log(selectedMarket)
     // Clear existing options
     roleDropdown.innerHTML = '<option value=""></option>';
+    if(selectedMarket){
+      console.log(selectedMarket)
+      const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
 
-    const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
+      // Populate the role dropdown with filtered roles
+      filteredRoles.forEach(role => {
+        const option = document.createElement('option');
+        option.value = role.Role;
+        option.text = role.Role;
+        roleDropdown.add(option);
+      });
+    }else{
+      rolesData.forEach(role => {
+        const option = document.createElement('option');
+        option.value = role.Role;
+        option.text = role.Role;
+        roleDropdown.add(option);
+      });
+    }
 
-    //console.log(filteredRoles);
-    // Populate the role dropdown with filtered roles
-    filteredRoles.forEach(role => {
-      const option = document.createElement('option');
-      option.value = role.Role;
-      option.text = role.Role;
-      roleDropdown.add(option);
-    });
+
+
   }
 async function getAccessToken(scopeInput){
 
