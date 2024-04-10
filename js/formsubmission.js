@@ -11,6 +11,7 @@ async function checkSelectedOptions() {
   const sectorDropdown = document.getElementById('ACC_input_3');
   const marketDropdown = document.getElementById('ACC_input_4');
   const roleDropdown = document.getElementById('ACC_input_5');
+  const companyDropdown = document.getElementById('ACC_company_input');
 
   if (projectDropdown.value === "") {
     alert("Please select a project from the dropdown.");
@@ -32,6 +33,11 @@ async function checkSelectedOptions() {
     return
   }
 
+  if (companyDropdown.value === "") {
+    alert("Please select a company from the dropdown.");
+    return
+  }
+
   if (sectorDropdown.value === "") {
     alert("Please select an option from the Sector dropdown.");
     return
@@ -46,6 +52,7 @@ async function checkSelectedOptions() {
     alert("Please select an option from the role dropdown.");
     return
   }
+
   response = await postUserToSP()
   if(response.status === 202){
     alert("Access Request Successfully Submitted")
