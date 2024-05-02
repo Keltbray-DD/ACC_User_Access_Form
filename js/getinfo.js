@@ -16,7 +16,7 @@ let marketDropdown
 let roleDropdown
 let rolesData
 
-const hub_id = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
+const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
 
 //rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
@@ -52,7 +52,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //getRawProjectList()
 
+async function getProjects(AccessToken){
 
+  const bodyData = {
+
+      };
+
+  const headers = {
+      'Authorization':"Bearer "+AccessToken,
+      'Content-Type':'application/json'
+  };
+
+  const requestOptions = {
+      method: 'GET',
+      headers: headers,
+      //body: JSON.stringify(bodyData)
+  };
+
+  const apiUrl = "https://developer.api.autodesk.com/project/v1/hubs/"+hubID+"/projects";
+  //console.log(apiUrl)
+  //console.log(requestOptions)
+  responseData = await fetch(apiUrl,requestOptions)
+      .then(response => response.json())
+      .then(data => {
+          const JSONdata = data
+
+      //console.log(JSONdata)
+
+      return JSONdata
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+  return responseData
+  }
 
 
 async function listProjects(){
@@ -61,13 +93,16 @@ async function listProjects(){
   }catch{
     console.log("Error")
   }
-  ProjectListRaw = await getProjects(accessToken)
-  console.log("Raw Project List",ProjectListRaw.results)
-  for(let i = 0; i < ProjectListRaw.results.length; i++){
-    if(ProjectListRaw.results[i].status === 'active'){
-      ProjectList.push({'ProjectName':ProjectListRaw.results[i].name,'ProjectID':ProjectListRaw.results[i].id})
-    }
+  try{
+    accessTokenDataRead = await getAccessToken("data:read")
+  }catch{
+    console.log("Error")
   }
+  ProjectListRaw = await getProjects(accessTokenDataRead)
+  console.log("Raw Project List",ProjectListRaw.data)
+  for(let i = 0; i < ProjectListRaw.data.length; i++){
+    ProjectList.push({'ProjectName':ProjectListRaw.data[i].attributes.name,'ProjectID':ProjectListRaw.data[i].id})
+}
   CompaniesList = await getCompnaies(accessToken)
   CompaniesList = CompaniesList.sort((a, b) => a.name.localeCompare(b.name))
 
@@ -287,40 +322,6 @@ async function generateTokenAccountRead(clientId,clientSecret){
       return AccessToken_Local
   }
 
-async function getProjects(AccessToken){
-
-  const bodyData = {
-
-      };
-
-  const headers = {
-      'Authorization':"Bearer "+AccessToken,
-      'Content-Type':'application/json'
-  };
-
-  const requestOptions = {
-      method: 'GET',
-      headers: headers,
-      //body: JSON.stringify(bodyData)
-  };
-
-  const apiUrl = "https://developer.api.autodesk.com/construction/admin/v1/accounts/"+account_id+"/projects";
-  //console.log(apiUrl)
-  //console.log(requestOptions)
-  signedURLData = await fetch(apiUrl,requestOptions)
-      .then(response => response.json())
-      .then(data => {
-          const JSONdata = data
-
-      //console.log(JSONdata)
-
-      return JSONdata
-      })
-      .catch(error => console.error('Error fetching data:', error));
-
-
-  return signedURLData
-  }
   async function getCompnaies(AccessToken){
 
     const bodyData = {
