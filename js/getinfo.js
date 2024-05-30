@@ -131,7 +131,7 @@ async function listProjects(){
 }
 
 
-function getProjectDetails(){
+function getProjectDetails(pID){
 
   async function fetchData(){
     var apiUrl_getProjectDetails = 'https://prod-28.uksouth.logic.azure.com:443/workflows/5bd3209073b748bc8b0089d5a52e5670/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Jyr6aOn2mx8vnBHIhhlJBsJU3d-4-3T2I_WWWBiTUUw';
@@ -141,7 +141,9 @@ function getProjectDetails(){
         console.log(data);
         let projectdetails = []
         for (let i= 0; i < data.length; i++) {
-          if (data[i].ProjectID===sessionStorage.getItem('selectedProjectID')) {
+          //console.log(data[i].ProjectID)
+          //console.log(sessionStorage.getItem('selectedProjectID'))
+          if (data[i].ProjectID === pID) {
             projectdetails = [...projectdetails, data[i]];
           }
         }
@@ -365,7 +367,9 @@ async function generateTokenAccountRead(clientId,clientSecret){
 
         // Display the extracted ID
         console.log('Extracted ID:', id);
+
         setDefaultSelectedValue(id)
+
     } else {
         console.log('No ID parameter found in the URL');
     }
@@ -387,17 +391,21 @@ async function generateTokenAccountRead(clientId,clientSecret){
   // Function to set the default selected value
   function setDefaultSelectedValue(id) {
     var dropdown = document.getElementById('ACC_project_input');
-    var defaultValue = id; // Replace '456' with the desired default value
+    var defaultValue = "b."+id; // Replace '456' with the desired default value
+    console.log(defaultValue)
     for (var i = 0; i < dropdown.options.length; i++) {
+      console.log(dropdown.options[i].value)
         if (dropdown.options[i].value === defaultValue) {
             dropdown.options[i].selected = true;
             let selectedProjectNameOption = dropdown.options[dropdown.selectedIndex].innerText;
             sessionStorage.setItem('selectedProjectName', selectedProjectNameOption);
-
+            console.log()
             let selectedProjectIDOption = dropdown.value;
+            console.log(selectedProjectIDOption)
+
             sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
 
-            getProjectDetails()
+            getProjectDetails(id)
             break;
         }
     }
