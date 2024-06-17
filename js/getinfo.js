@@ -12,6 +12,7 @@ let ProjectRoles
 let ProjectList =[]
 let ProjectListRaw
 let projectListDetails =[]
+let ACC_project_input_dropdown
 let marketDropdown
 let roleDropdown
 let rolesData
@@ -25,12 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
   // JavaScript code here
   marketDropdown = document.getElementById('ACC_input_4');
   roleDropdown = document.getElementById('ACC_input_5');
+  ACC_project_input_dropdown = document.getElementById('ACC_project_input');
 
   loadingScreen = document.getElementById('loadingScreen');
   // Show the loading screen
   function showLoadingScreen() {
       loadingScreen.style.display = 'flex';
   }
+  // Add the change event listener
+  ACC_project_input_dropdown.addEventListener('change', function() {
+    // Get the selected value
+    const selectedValue = ACC_project_input_dropdown.value;
+    getProjectDetails(selectedValue)
+    // Perform an action based on the selected value
+    console.log('Selected value:', selectedValue);
+  });
 
   // Hide the loading screen
   async function hideLoadingScreen() {
@@ -47,6 +57,9 @@ document.addEventListener('DOMContentLoaded', function() {
     hideLoadingScreen()
   }
 });
+// Select the dropdown element
+
+
 
 
 
@@ -138,6 +151,7 @@ function getProjectDetails(pID){
     fetch(apiUrl_getProjectDetails)
       .then(response => response.json())
       .then(data => {
+        console.log(pID)
         console.log(data);
         let projectdetails = []
         for (let i= 0; i < data.length; i++) {
@@ -191,6 +205,12 @@ function getProjectDetails(pID){
           sessionStorage.setItem('HM_Email',"");
           sessionStorage.setItem('OM_Email',"");
           console.log("No details found")
+          alert("No data found for the selected project, please contact accsupportdigital@keltbray.com if you require access to this project")
+          
+          const SubmitButton = document.getElementById('ACC_Request_Form_btn');
+          //console.log(SubmitButton)
+          SubmitButton.disabled = true
+          location.reload()
         }
 
 
