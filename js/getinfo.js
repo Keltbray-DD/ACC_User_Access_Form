@@ -425,7 +425,7 @@ async function generateTokenAccountRead(clientId,clientSecret){
 
             sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
 
-            getProjectDetails(id)
+            getProjectDetails(defaultValue)
             break;
         }
     }
