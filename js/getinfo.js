@@ -223,7 +223,7 @@ function getProjectDetails(pID){
 }
 
 async function getProjectRoles(){
-      var apiUrl_getProjectRoles = 'https://prod-21.uksouth.logic.azure.com:443/workflows/e56b0f45849e4042bbb0619e6d98048c/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=NyZXTcmNXZbbC5TioPESi5D7nlG0_xvB5jlyeLVVSQ0';
+      var apiUrl_getProjectRoles = 'https://prod-07.uksouth.logic.azure.com:443/workflows/38dde2d38944467ead65e2349ef9867d/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fdBObPGteUBN6_WeI3A1eQMkhGaGrjh1RkydvSYkHQQ';
       data = fetch(apiUrl_getProjectRoles)
         .then(response => response.json())
         .then(data => {
@@ -288,7 +288,7 @@ async function getAccessToken(scopeInput){
       body: JSON.stringify(bodyData)
   };
 
-  const apiUrl = "https://prod-18.uksouth.logic.azure.com:443/workflows/d8f90f38261044b19829e27d147f0023/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=-N-bYaES64moEe0gFiP5J6XGoZBwCVZTmYZmUbdJkPk";
+  const apiUrl = "https://prod-30.uksouth.logic.azure.com:443/workflows/df0aebc4d2324e98bcfa94699154481f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jHsW0eISklveK7XAJcG0nhfEnffX62AP0mLqJrtLq9c";
   //console.log(apiUrl)
   //console.log(requestOptions)
   signedURLData = await fetch(apiUrl,requestOptions)
@@ -331,7 +331,7 @@ async function generateTokenAccountRead(clientId,clientSecret){
       headers: headers,
       body: formBody,
   };
-  const apiUrl = 'https://developer.api.autodesk.com/authentication/v1/authenticate';
+  const apiUrl = 'https://developer.api.autodesk.com/authentication/v2/token';
   //console.log(requestOptions)
   AccessToken_Local = await fetch(apiUrl,requestOptions)
       .then(response => response.json())

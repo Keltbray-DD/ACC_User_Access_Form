@@ -199,7 +199,7 @@ async function generateTokenDataRead(clientId,clientSecret){
         headers: headers,
         body: formBody,
     };
-    const apiUrl = 'https://developer.api.autodesk.com/authentication/v1/authenticate';
+    const apiUrl = 'https://developer.api.autodesk.com/authentication/v2/token';
     //console.log(requestOptions)
     AccessToken_Local = await fetch(apiUrl,requestOptions)
         .then(response => response.json())
