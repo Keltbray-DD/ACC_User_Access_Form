@@ -411,7 +411,7 @@ async function generateTokenAccountRead(clientId,clientSecret){
   // Function to set the default selected value
   function setDefaultSelectedValue(id) {
     var dropdown = document.getElementById('ACC_project_input');
-    var defaultValue = "b."+id; // Replace '456' with the desired default value
+    var defaultValue = id; // Replace '456' with the desired default value
     console.log(defaultValue)
     for (var i = 0; i < dropdown.options.length; i++) {
       console.log(dropdown.options[i].value)
