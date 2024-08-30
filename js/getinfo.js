@@ -384,7 +384,9 @@ async function generateTokenAccountRead(clientId,clientSecret){
     if (url.indexOf('id=') !== -1) {
         // Extract the value of the 'id' parameter
         var id = url.split('id=')[1];
-
+      if(id.includes("b.")){
+        id = id.split('b.')[0]
+      }
         // Display the extracted ID
         console.log('Extracted ID:', id);
 
