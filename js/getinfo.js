@@ -147,7 +147,7 @@ async function listProjects(){
 function getProjectDetails(pID){
 
   async function fetchData(){
-    var apiUrl_getProjectDetails = 'https://prod-28.uksouth.logic.azure.com:443/workflows/5bd3209073b748bc8b0089d5a52e5670/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Jyr6aOn2mx8vnBHIhhlJBsJU3d-4-3T2I_WWWBiTUUw';
+    var apiUrl_getProjectDetails = 'https://prod-20.uksouth.logic.azure.com:443/workflows/2cc8fb7970aa4bd7937f358ce8eefe32/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9a4Bz7iC7ppwIxMMi4U6_Ybf32GaGqUqGc2knExZPVs';
     fetch(apiUrl_getProjectDetails)
       .then(response => response.json())
       .then(data => {
@@ -384,9 +384,7 @@ async function generateTokenAccountRead(clientId,clientSecret){
     if (url.indexOf('id=') !== -1) {
         // Extract the value of the 'id' parameter
         var id = url.split('id=')[1];
-      if(id.includes("b.")){
-        id = id.split('b.')[1]
-      }
+
         // Display the extracted ID
         console.log('Extracted ID:', id);
 
