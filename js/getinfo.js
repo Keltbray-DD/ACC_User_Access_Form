@@ -1,25 +1,3 @@
-let projectdetails
-let PM_Email
-let APM_Email
-let DM_Email
-let ADM_Email
-let HM_Email
-let QM_Email
-let AQM_Email
-let IM_Email
-let DC_Email
-let ProjectRoles
-let ProjectList =[]
-let ProjectListRaw
-let projectListDetails =[]
-let ACC_project_input_dropdown
-let marketDropdown
-let roleDropdown
-let rolesData
-
-const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
-const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
-
 //rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -27,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   marketDropdown = document.getElementById('ACC_input_4');
   roleDropdown = document.getElementById('ACC_input_5');
   ACC_project_input_dropdown = document.getElementById('ACC_project_input');
-
+  document.getElementById("appInfo").textContent = `${appName} ${appVersion}`;
   loadingScreen = document.getElementById('loadingScreen');
   // Show the loading screen
   function showLoadingScreen() {
@@ -53,52 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
     checkURL()
     rolesData = await getProjectRoles()
     console.log("ACC Roles",rolesData);
-    filterRoles();
+    populateRoles();
     hideLoadingScreen()
   }
 });
 // Select the dropdown element
-
-
-
-
-
-//getRawProjectList()
-
-async function getProjects(AccessToken){
-
-  const bodyData = {
-
-      };
-
-  const headers = {
-      'Authorization':"Bearer "+AccessToken,
-      'Content-Type':'application/json'
-  };
-
-  const requestOptions = {
-      method: 'GET',
-      headers: headers,
-      //body: JSON.stringify(bodyData)
-  };
-
-  const apiUrl = "https://developer.api.autodesk.com/project/v1/hubs/"+hubID+"/projects";
-  //console.log(apiUrl)
-  //console.log(requestOptions)
-  responseData = await fetch(apiUrl,requestOptions)
-      .then(response => response.json())
-      .then(data => {
-          const JSONdata = data
-
-      //console.log(JSONdata)
-
-      return JSONdata
-      })
-      .catch(error => console.error('Error fetching data:', error));
-
-  return responseData
-  }
-
 
 async function listProjects(){
   try{
@@ -111,10 +48,10 @@ async function listProjects(){
   }catch{
     console.log("Error")
   }
-  ProjectListRaw = await getProjects(accessTokenDataRead)
-  console.log("Raw Project List",ProjectListRaw.data)
-  for(let i = 0; i < ProjectListRaw.data.length; i++){
-    ProjectList.push({'ProjectName':ProjectListRaw.data[i].attributes.name,'ProjectID':ProjectListRaw.data[i].id})
+  ProjectListRaw = await fetchProjects()
+  console.log("Raw Project List",ProjectListRaw)
+  for(let i = 0; i < ProjectListRaw.length; i++){
+    ProjectList.push({'ProjectName':ProjectListRaw[i].ProjectName,'ProjectID':ProjectListRaw[i].Title})
 }
   CompaniesList = await getCompnaies(accessToken)
   CompaniesList = CompaniesList.sort((a, b) => a.name.localeCompare(b.name))
@@ -147,70 +84,79 @@ async function listProjects(){
 function getProjectDetails(pID){
 
   async function fetchData(){
-    var apiUrl_getProjectDetails = 'https://prod-20.uksouth.logic.azure.com:443/workflows/2cc8fb7970aa4bd7937f358ce8eefe32/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9a4Bz7iC7ppwIxMMi4U6_Ybf32GaGqUqGc2knExZPVs';
-    fetch(apiUrl_getProjectDetails)
+
+    const bodyData = {
+      projectCode: pID,
+      };
+
+  const headers = {
+      'Content-Type':'application/json'
+  };
+
+  const requestOptions = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(bodyData)
+  };
+
+    var apiUrl_getProjectDetails = 'https://prod-49.uksouth.logic.azure.com:443/workflows/6aa2657ac7f6493daa4a7d22650501f0/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=5joSV1MRVUbO7SK-o15RMdnzSD2w39R-ynkFsTM2Uw0';
+    fetch(apiUrl_getProjectDetails,requestOptions)
       .then(response => response.json())
       .then(data => {
         console.log(pID)
         console.log(data);
-        let projectdetails = []
-        for (let i= 0; i < data.length; i++) {
-          //console.log(data[i].ProjectID)
-          //console.log(sessionStorage.getItem('selectedProjectID'))
-          if (data[i].ProjectID === pID) {
-            projectdetails = [...projectdetails, data[i]];
-          }
-        }
+        let projectdetails = data
+
+
         if(projectdetails.length > 0){
           var ProjectName_Local = projectdetails[0].ProjectName;
           sessionStorage.setItem('ProjectName',ProjectName_Local);
   
-          //document.getElementById('IMEmail').innerHTML = sessionStorage.getItem('ProjectName');
-          var IM_Email_Local = projectdetails[0].IM;
-          sessionStorage.setItem('IM_Email',IM_Email_Local);
-          //document.getElementById('IMEmail').innerHTML = sessionStorage.getItem('IM_Email');
-          var PM_Email_Local = projectdetails[0].PM;
-          sessionStorage.setItem('PM_Email',PM_Email_Local);
-          //document.getElementById('PMEmail').innerHTML = sessionStorage.getItem('PM_Email');
-          var DC_Email_Local = projectdetails[0].DC;
-          sessionStorage.setItem('DC_Email',DC_Email_Local);
-          //document.getElementById('DCEmail').innerHTML = sessionStorage.getItem('DC_Email');
-          var DM_Email_Local = projectdetails[0].DM;
-          sessionStorage.setItem('DM_Email',DM_Email_Local);
-          //document.getElementById('DMEmail').innerHTML = sessionStorage.getItem(DM_Email);
-          var ADM_Email_Local = projectdetails[0].ADM;
-          sessionStorage.setItem('ADM_Email',ADM_Email_Local);
-          //document.getElementById('ADMEmail').innerHTML = sessionStorage.getItem(ADM_Email);
-          var QM_Email_Local = projectdetails[0].QM;
-          sessionStorage.setItem('QM_Email',QM_Email_Local);
-          //document.getElementById('QMEmail').innerHTML = sessionStorage.getItem(QM_Email);
-          var AQM_Email_Local = projectdetails[0].AQM;
-          sessionStorage.setItem('AQM_Email',AQM_Email_Local);
-          //document.getElementById('AQMEmail').innerHTML = sessionStorage.getItem(AQM_Email);
-          var HM_Email_Local = projectdetails[0].HM;
-          sessionStorage.setItem('HM_Email',HM_Email_Local);
-          //document.getElementById('HMEmail').innerHTML = sessionStorage.getItem(HM_Email);
-          var OM_Email_Local = projectdetails[0].OM;
-          sessionStorage.setItem('OM_Email',OM_Email_Local);
-          //document.getElementById('HMEmail').innerHTML = sessionStorage.getItem(HM_Email);
-          console.log("Project Details List",projectdetails);
+          let projectManagers = projectdetails[0].ProjectManager
+          let documentControllers = projectdetails[0].DocumentController
+          let accessApprovers = projectdetails[0].AccessApprovers
+  
+          console.log(projectManagers)
+          console.log(accessApprovers)
+          console.log(documentControllers)
+
+          if (projectManagers) {
+           emailStringProjectManagers = projectManagers.Email
+          }
+          if (documentControllers) {
+            emailStringDocumentControllers = documentControllers
+              .map((user) => user.Email)
+              .join(", ");
+          }
+          if (accessApprovers) {
+            emailStringAccessApprovers = accessApprovers
+              .map((user) => user.Email)
+              .join(", ");
+          }
+
+          console.log(emailStringProjectManagers)
+          console.log(emailStringDocumentControllers)
+          console.log(emailStringAccessApprovers)
+
+          PM_Email = emailStringProjectManagers
+          AA_Email = emailStringAccessApprovers
+          DC_Email = emailStringDocumentControllers
+
+          console.log('PM_Email',PM_Email)
+          console.log('AA_Email',AA_Email)
+          console.log('DC_Email',DC_Email)
+
         } else{
-          sessionStorage.setItem('IM_Email',"");
           sessionStorage.setItem('PM_Email',"");
           sessionStorage.setItem('DC_Email',"");
-          sessionStorage.setItem('DM_Email',"");
-          sessionStorage.setItem('ADM_Email',"");
-          sessionStorage.setItem('QM_Email',"");
-          sessionStorage.setItem('AQM_Email',"");
-          sessionStorage.setItem('HM_Email',"");
-          sessionStorage.setItem('OM_Email',"");
+          sessionStorage.setItem('Approvers_Email_Local',"");
           console.log("No details found")
           alert("No data found for the selected project, please contact accsupportdigital@keltbray.com if you require access to this project")
           
           const SubmitButton = document.getElementById('ACC_Request_Form_btn');
           //console.log(SubmitButton)
           SubmitButton.disabled = true
-          location.reload()
+          //location.reload()
         }
 
 
@@ -244,30 +190,18 @@ async function getProjectRoles(){
 
 
   // Function to filter roles based on selected market
-function filterRoles() {
-    //console.log(marketDropdown)
-    const selectedMarket = marketDropdown.value;
+function populateRoles() {
+
     // Clear existing options
     roleDropdown.innerHTML = '<option value=""></option>';
-    if(selectedMarket){
-      console.log(selectedMarket)
-      const filteredRoles = rolesData.filter(role => role.Market === selectedMarket || (selectedMarket === 'Rail' && role.Market === 'All') || (selectedMarket === 'Energy' && role.Market === 'All')|| (selectedMarket === 'Highways' && role.Market === 'All'));
 
-      // Populate the role dropdown with filtered roles
-      filteredRoles.forEach(role => {
-        const option = document.createElement('option');
-        option.value = role.Role;
-        option.text = role.Role;
-        roleDropdown.add(option);
-      });
-    }else{
       rolesData.forEach(role => {
         const option = document.createElement('option');
         option.value = role.Role;
         option.text = role.Role;
         roleDropdown.add(option);
       });
-    }
+    
 
 
 

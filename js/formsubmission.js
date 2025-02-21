@@ -8,8 +8,6 @@ async function checkSelectedOptions() {
   const FirstNameInput = document.getElementById('ACC_first_6');
   const LastNameInput = document.getElementById('ACC_last_6');
   const EmailInput = document.getElementById('ACC_input_7');
-  const sectorDropdown = document.getElementById('ACC_input_3');
-  const marketDropdown = document.getElementById('ACC_input_4');
   const roleDropdown = document.getElementById('ACC_input_5');
   const companyDropdown = document.getElementById('ACC_company_input');
 
@@ -38,16 +36,6 @@ async function checkSelectedOptions() {
     return
   }
 
-  if (sectorDropdown.value === "") {
-    alert("Please select an option from the Sector dropdown.");
-    return
-  }
-
-  if (marketDropdown.value === "") {
-    alert("Please select an option from the Market dropdown.");
-    return
-  }
-
   if (roleDropdown.value === "") {
     alert("Please select an option from the role dropdown.");
     return
@@ -72,13 +60,11 @@ async function postUserToSP(){
         Name: $("#ACC_first_6").val()+" "+$("#ACC_last_6").val(),
         firstName:$("#ACC_first_6").val(),
         lastName:$("#ACC_last_6").val(),
-        Sector: $("#ACC_input_3").val(),
-        Market: $("#ACC_input_4").val(),
         ProjectRole: $("#ACC_input_5").val(),
         OCRARole: OCRARole_Local,
-        PMEmail: sessionStorage.getItem('PM_Email'),
-        IMEmail: sessionStorage.getItem('IM_Email'),
-        DCEmail: sessionStorage.getItem('DC_Email'),
+        PMEmail: PM_Email,
+        AAEmail: AA_Email,
+        DCEmail: DC_Email,
         Project: sessionStorage.getItem('selectedProjectName'),
         ProjectID: sessionStorage.getItem('selectedProjectID'),
         Company: sessionStorage.getItem('selectedCompanyName'),
