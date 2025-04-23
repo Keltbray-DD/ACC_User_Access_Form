@@ -53,15 +53,16 @@ function resetForm() {
   document.getElementById("ACC_Access_Request_Form").reset()
 }
 async function postUserToSP(){
-  OCRARole_Local = await searchArray($("#ACC_input_5").val());
-  console.log(OCRARole_Local)
+  // OCRARole_Local = await searchArray($("#ACC_input_5").val());
+  // console.log(OCRARole_Local)
   const bodyData = {
         Email: $("#ACC_input_7").val(),
         Name: $("#ACC_first_6").val()+" "+$("#ACC_last_6").val(),
         firstName:$("#ACC_first_6").val(),
         lastName:$("#ACC_last_6").val(),
         ProjectRole: $("#ACC_input_5").val(),
-        OCRARole: OCRARole_Local,
+        AdditionalRoles: additionalRoles,
+        roleIDs: roleIDsArray,
         PMEmail: PM_Email,
         AAEmail: AA_Email,
         DCEmail: DC_Email,
@@ -109,5 +110,46 @@ async function postUserToSP(){
     console.log("foundItem:",foundItem)
     if (foundItem) {
       return foundItem.OCRARoles;
+    }
+  }
+
+  async function generateAdditionalRoles() {
+    const selectedRole = document.getElementById("ACC_input_5").value;
+
+    const role = rolesData.find(p => p.role === selectedRole);
+  
+    if (role) {
+      const result = role.projectAdminRoles.map(roleName => {
+        console.log(roleName)
+        const accRole = accRoles.find(r => r.name === roleName.Value);
+        return accRole ? { name: roleName.Value, id: accRole.id } : null;
+      }).filter(item => item !== null);
+  
+      console.log(JSON.stringify(result, null, 2))
+      return result
+    } else {
+      console.log("Role not found")
+    }
+  }
+
+  async function generateOCRARoles(companyName) {
+    const selectedRole = document.getElementById("ACC_input_5").value;
+
+    const role = rolesData.find(p => p.role === selectedRole);
+    companyCode = aureosCompanyList.find(r => r.name === companyName)
+    console.log(companyCode)
+    if (role) {
+      const result = role.ocraRoles.map(roleName => {
+        console.log(roleName)
+        const combinedName = `${companyCode.code}_OCRA_${roleName.Value}`
+        console.log(combinedName)
+        const accRole = accRoles.find(r => r.name === combinedName);
+        return accRole ? { name: combinedName, id: accRole.id } : null;
+      }).filter(item => item !== null);
+  
+      console.log(JSON.stringify(result, null, 2))
+      return result
+    } else {
+      console.log("Role not found")
     }
   }

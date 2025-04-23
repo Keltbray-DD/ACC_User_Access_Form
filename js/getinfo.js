@@ -1,16 +1,13 @@
 //rolesData = JSON.parse(sessionStorage.getItem(ProjectRoles));
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // JavaScript code here
   marketDropdown = document.getElementById('ACC_input_4');
   roleDropdown = document.getElementById('ACC_input_5');
   ACC_project_input_dropdown = document.getElementById('ACC_project_input');
   document.getElementById("appInfo").textContent = `${appName} ${appVersion}`;
   loadingScreen = document.getElementById('loadingScreen');
-  // Show the loading screen
-  function showLoadingScreen() {
-      loadingScreen.style.display = 'flex';
-  }
+
   // Add the change event listener
   ACC_project_input_dropdown.addEventListener('change', function() {
     // Get the selected value
@@ -20,55 +17,40 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Selected value:', selectedValue);
   });
 
-  // Hide the loading screen
-  async function hideLoadingScreen() {
-      loadingScreen.style.display = 'none';
-  }
   initalStartUp()
   async function initalStartUp(){
-
-    await listProjects()
+    await showLoadingScreen(loadingScreen)
+    try{
+      accessToken = await getAccessToken("account:read data:read")
+    }catch{
+      console.log("Error")
+    }
+    await runGetProjects()
     checkURL()
-    rolesData = await getProjectRoles()
-    console.log("ACC Roles",rolesData);
-    populateRoles();
-    hideLoadingScreen()
+    await runGetCompanies()
+    await runGetRoles()
+
+    await hideLoadingScreen(loadingScreen)
+    const enriched = getProjectAdminRoleIdsFor("Project Manager", rolesData, accRoles);
+    console.log(enriched);
   }
 });
+
+  // Show the loading screen
+  async function showLoadingScreen(element) {
+    element.style.display = 'flex';
+}
+  // Hide the loading screen
+  async function hideLoadingScreen(element) {
+    element.style.display = 'none';
+  }
 // Select the dropdown element
 
-async function listProjects(){
-  try{
-    accessToken = await getAccessToken("account:read")
-  }catch{
-    console.log("Error")
-  }
-  try{
-    accessTokenDataRead = await getAccessToken("data:read")
-  }catch{
-    console.log("Error")
-  }
-  ProjectListRaw = await fetchProjects()
-  console.log("Raw Project List",ProjectListRaw)
-  for(let i = 0; i < ProjectListRaw.length; i++){
-    ProjectList.push({'ProjectName':ProjectListRaw[i].ProjectName,'ProjectID':ProjectListRaw[i].Title})
-}
+async function runGetCompanies() {
   CompaniesList = await getCompnaies(accessToken)
   CompaniesList = CompaniesList.sort((a, b) => a.name.localeCompare(b.name))
-
-  console.log("Filtered Project List",ProjectList)
-  sessionStorage.setItem(ProjectList,JSON.stringify(ProjectList));
   console.log("Companies List",CompaniesList)
   sessionStorage.setItem(CompaniesList,JSON.stringify(CompaniesList));
-
-  const projectDropdown = document.getElementById('ACC_project_input');
-  projectDropdown.innerHTML = '<option value=""></option>'
-  ProjectList.forEach(project => {
-    const option = document.createElement('option');
-    option.text = project.ProjectName;
-    option.value = project.ProjectID;
-    projectDropdown.add(option);
-  });
 
   const companyDropdown = document.getElementById('ACC_company_input');
   companyDropdown.innerHTML = '<option value=""></option>'
@@ -78,6 +60,62 @@ async function listProjects(){
     option.value = project.id;
     companyDropdown.add(option);
   });
+}
+
+async function runGetProjects() {
+  ProjectListRaw = await fetchProjects();
+  //console.log("Raw Project List",ProjectListRaw)
+  for (let i = 0; i < ProjectListRaw.length; i++) {
+    ProjectList.push({
+      ProjectName: ProjectListRaw[i].ProjectName,
+      ProjectID: ProjectListRaw[i].Title,
+    });
+  }
+
+  console.log("Filtered Project List", ProjectList);
+  sessionStorage.setItem(ProjectList, JSON.stringify(ProjectList));
+
+  const projectDropdown = document.getElementById("ACC_project_input");
+  projectDropdown.innerHTML = '<option value=""></option>';
+  ProjectList.forEach((project) => {
+    const option = document.createElement("option");
+    option.text = project.ProjectName;
+    option.value = project.ProjectID;
+    projectDropdown.add(option);
+  });
+}
+
+async function runGetRoles() {
+  rolesData = await getProjectRoles()
+  console.log("Aureos Roles",rolesData);
+  await populateRoles();
+  accRoles = await getACCRoles()
+  console.log("ACC Roles",accRoles);
+  console.log("Aureos Roles",rolesData);
+}
+
+function getProjectAdminRoleIdsFor(inputRole, rolesArray, metadataArray) {
+  // Find the role entry for the input role
+  const matchedRole = rolesArray.find(r => r.role.trim().toLowerCase() === inputRole.trim().toLowerCase());
+  if (!matchedRole) return [];
+
+  // Create lookup map for metadata
+  const metadataMap = new Map(
+    metadataArray.map(item => [item.name.trim().toLowerCase(), item.id])
+  );
+
+  // Enrich the projectAdminRoles with their metadata `id`
+  const enrichedRoles = matchedRole.projectAdminRoles.map(role => {
+    const roleName = role.Value.trim().toLowerCase();
+    const roleId = metadataMap.get(roleName) || null;
+
+    return {
+      ...role,
+      roleId
+    };
+  });
+
+  return enrichedRoles;
 }
 
 
@@ -174,15 +212,15 @@ async function getProjectRoles(){
         .then(response => response.json())
         .then(data => {
           //console.log(data)
-            let projectRoles_Local = []
-            for (let i= 0; i < data.length; i++) {
-              if (data[i].IsRole==="1" && data[i].Required ==="Y") {
-                projectRoles_Local = [...projectRoles_Local, data[i]];
-              }
-            }
-            sessionStorage.setItem(ProjectRoles,JSON.stringify(projectRoles_Local));
+            // let projectRoles_Local = []
+            // for (let i= 0; i < data.length; i++) {
+            //   if (data[i].IsRole==="1" && data[i].Required ==="Y") {
+            //     projectRoles_Local = [...projectRoles_Local, data[i]];
+            //   }
+            // }
+            // sessionStorage.setItem(ProjectRoles,JSON.stringify(projectRoles_Local));
             //console.log(data);
-            return projectRoles_Local
+            return data
         })
         .catch(error => console.error('Error fetching data:', error));
         return data
@@ -190,22 +228,51 @@ async function getProjectRoles(){
 
 
   // Function to filter roles based on selected market
-function populateRoles() {
+async function populateRoles() {
 
     // Clear existing options
     roleDropdown.innerHTML = '<option value=""></option>';
 
       rolesData.forEach(role => {
         const option = document.createElement('option');
-        option.value = role.Role;
-        option.text = role.Role;
+        option.value = role.role;
+        option.text = role.role;
         roleDropdown.add(option);
       });
-    
-
-
-
   }
+
+  async function getACCRoles(){
+ 
+    const headers = {
+      'Authorization':"Bearer "+accessToken,
+      'Content-Type':'application/json'
+    };
+  
+    const requestOptions = {
+        method: 'GET',
+        headers: headers,
+        //body: JSON.stringify(bodyData)
+    };
+  
+    const apiUrl = `https://developer.api.autodesk.com/hq/v2/regions/eu/accounts/${account_id}/projects/${default_project_id}/industry_roles`;
+    //console.log(apiUrl)
+    //console.log(requestOptions)
+    responseData = await fetch(apiUrl,requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            const JSONdata = data
+  
+        //console.log(JSONdata)
+  
+        return JSONdata
+        })
+        .catch(error => console.error('Error fetching data:', error));
+  
+  
+    return responseData
+    }
+  
+
 async function getAccessToken(scopeInput){
 
   const bodyData = {
@@ -240,44 +307,6 @@ async function getAccessToken(scopeInput){
   return signedURLData
   }
 
-async function generateTokenAccountRead(clientId,clientSecret){
-  const bodyData = {
-  client_id: clientId,
-  client_secret: clientSecret,
-  grant_type:'client_credentials',
-  scope:'account:read'
-  };
-
-  var formBody = [];
-  for (var property in bodyData) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(bodyData[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-  };
-  formBody = formBody.join("&")
-
-  const headers = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-  };
-
-  const requestOptions = {
-      method: 'POST',
-      headers: headers,
-      body: formBody,
-  };
-  const apiUrl = 'https://developer.api.autodesk.com/authentication/v2/token';
-  //console.log(requestOptions)
-  AccessToken_Local = await fetch(apiUrl,requestOptions)
-      .then(response => response.json())
-      .then(data => {
-      //console.log(data)
-      //console.log(data.access_token)
-      return data.access_token
-      })
-      .catch(error => console.error('Error fetching data:', error));
-      return AccessToken_Local
-  }
-
   async function getCompnaies(AccessToken){
 
     const bodyData = {
@@ -298,16 +327,16 @@ async function generateTokenAccountRead(clientId,clientSecret){
     const apiUrl = "https://developer.api.autodesk.com/hq/v1/regions/eu/accounts/"+account_id+"/companies?limit=100";
     //console.log(apiUrl)
     //console.log(requestOptions)
-    signedURLData = await fetch(apiUrl,requestOptions)
+    repsonseData = await fetch(apiUrl,requestOptions)
         .then(response => response.json())
         .then(data => {
             const JSONdata = data
-
+            console.log(JSONdata)
         return JSONdata
         })
         .catch(error => console.error('Error fetching data:', error));
 
-    return signedURLData
+    return repsonseData
   }
 
   async function getProjectFromURL(){

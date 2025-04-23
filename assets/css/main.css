@@ -16,60 +16,84 @@ html {
     height: 100%;
 }
 
-header {
+.top-bar {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(245, 243, 243);
-    padding: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* slight box shadow */
-    height: 90px;
-}
-
-.header-section {
-    flex: 1;
-}
-
-.header-section h2 {
-    text-align: left;
-    /* Left text horizontally */
-    float: left;
-    margin: 10px auto;
-    height: 100%;
-}
-
-.header-section h3 {
-    text-align: right;
-
-    margin: 5px;
-    height: 100%;
-}
-
-img.logo_H {
-    display: flex;
-    float: left;
-    height: 100%;
-    margin: 10px auto;
-}
-
-.header-section:nth-child(2) {
+    position: sticky;
+    top: 0;
+  }
+  .logo {
+    max-width: 150px;
+  }
+  .top-bar .title h2 {
+    margin: 0;
+    margin: auto;
+  }
+  .profile-container {
+    position: relative;
+    cursor: pointer;
+    width: 150px;
+  }
+  
+  .profile-pic {
+    float: right;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    width: 200px;
+    display: none;
+    z-index: 1001;
+  }
+  
+  .dropdown-menu.active {
+    display: block;
+  }
+  
+  
+  .dropdown-menu div {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .dropdown-menu div:last-child {
+    border-bottom: none;
+  }
+  
+  .dropdown-menu div p {
+    max-width: 100%;
+    overflow: hidden;        /* Hides the overflowing content */
+    text-overflow: ellipsis; /* Adds the ellipsis (...) */
+    white-space: nowrap;     /* Prevents text from wrapping to the next line */
+    margin: 5px 0;
+  }
+  
+  .logout {
+    background-color: #f44336;
+    color: white;
     text-align: center;
-    flex: 2.5;
-    /* 60% of the width */
-
-}
-
-.header-section:first-child,
-.header-section:last-child {
-    flex: 1.5;
-    /* 20% of the width each */
-    justify-content: center;
-    /* Center content horizontally */
-    align-items: center;
-    /* Center content vertically */
-
-}
+    cursor: pointer;
+    border-radius: 0 0 6px 6px;
+  }
+  
+  .logout:hover {
+    background-color: #d32f2f;
+  }
 
 
 /* Additional styling */
@@ -181,6 +205,14 @@ input[type="email"]:focus {
 
 input[type="email"]::placeholder {
     color: #aaa;
+}
+
+select:disabled,
+input[type="text"]:disabled,
+input[type="email"]:disabled {
+    border-color: #808080;
+    cursor: not-allowed;
+    /* Green */
 }
 
 /* Styles for the select dropdowns */
@@ -337,6 +369,12 @@ input[type="submit"]:active {
     /* Slightly darker green */
 }
 
+input[type="submit"]:disabled {
+    background-color: #868686;
+    cursor: not-allowed;
+    /* Slightly darker green */
+}
+
 /* Style for the submit button */
 .submitButton {
     background-color: #4CAF50;
@@ -367,7 +405,7 @@ input[type="submit"]:active {
     /* Slightly darker green */
 }
 
-.submitButton.disabled {
+.submitButton:disabled {
     background-color: #ccc; /* Grey */
     cursor: not-allowed;
 }
@@ -504,7 +542,7 @@ ul li {
     color: white;
 }
 
-.logo {
+.footer-logo {
     position: fixed;
     /* Fixes the position relative to the viewport */
     bottom: 20px;
@@ -523,7 +561,7 @@ ul li {
     /* Smooth hover effect */
 }
 
-.logo:hover {
+.footer-logo:hover {
     opacity: 1;
     /* Full opacity on hover */
     transform: scale(1.05);

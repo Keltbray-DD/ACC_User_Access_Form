@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="./js/variables.js"></script>
-  <script src="./js/acc_functions.js"></script>
+  <script src="js/variables.js"></script>
+  <script src="js/acc_functions.js"></script>
   <script src="js/getinfo.js"></script>
   <script src="js/formsubmission.js"></script>
   <link rel="stylesheet" href="assets/css/main.css">
@@ -22,19 +22,15 @@
     <div class="spinner"></div>
     <p>Loading ACC Data...</p>
   </div>
-  <header>
-    <div class="header-section">
-      <img alt="" id="headerlogo" class="logo_H"
-        src="https://www.aureos.com/wp-content/uploads/2025/02/AUREOS-FAVicon_512px-x-512px-150x150.png">
-      <h2>Aureos<br>DD Hub</h2>
+  <div class="top-bar">
+    <img src="https://www.aureos.com/wp-content/themes/keltbray/assets/img/logo/AUREOS_logo_wh.svg" 
+    class="logo logo--white" 
+    alt="Aureos Logo">
+    <div class="title"><h2>ACC Access Request Form</h2></div>
+    <div class="profile-container" id="profileMenu">
+
     </div>
-    <div class="header-section">
-      <h1>ACC Access Request Form</h1>
-    </div>
-    <div class="header-section">
-      <h3></h3>
-    </div>
-  </header>
+  </div>
 
   <main>
 
@@ -60,6 +56,10 @@
             sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
 
             console.log(selectedProjectNameOption, selectedProjectIDOption)
+            
+            document.getElementById('ACC_first_6').disabled = false
+            document.getElementById('ACC_last_6').disabled = false
+            document.getElementById('ACC_input_7').disabled = false
 
           });
         </script>
@@ -79,7 +79,7 @@
                     Name</label>
                   <input type="text" id="ACC_first_6" name="first name" class="form-textbox " data-defaultvalue=""
                     autocomplete="section-input_6 given-name" size="10" value="" data-component="first"
-                    aria-labelledby="label_6 sublabel_6_first">
+                    aria-labelledby="label_6 sublabel_6_first" disabled>
 
                 </span>
                 <span class="form-input-half" data-input-type="last">
@@ -87,7 +87,7 @@
                     Name</label>
                   <input type="text" id="ACC_last_6" name="last name" class="form-textbox" data-defaultvalue=""
                     autocomplete="section-input_6 family-name" size="15" value="" data-component="last"
-                    aria-labelledby="label_6 sublabel_6_last">
+                    aria-labelledby="label_6 sublabel_6_last" disabled>
 
                 </span>
               </div>
@@ -100,7 +100,7 @@
               <span class="form-sub-label-container">
                 <input type="email" id="ACC_input_7" name="q7_email" class="form-textbox" data-defaultvalue=""
                   autocomplete="section-input_7 email" value="" data-component="email"
-                  aria-labelledby="label_7 sublabel_input_7" placeholder="e.g. example@company.com" onchange="validateEmail()"></span>
+                  aria-labelledby="label_7 sublabel_input_7" placeholder="e.g. example@company.com" onchange="validateEmail()" disabled></span>
                   <p id="message"></p>
 
                   <script>
@@ -115,14 +115,11 @@
 
                           if (emailRegex.test(email)) {
                               message.style.color = "green";
-                              message.textContent = "✅ Valid Business Email!";
-                              submitButton.disabled = false; // Enable button
-                              submitButton.classList.remove("disabled"); // Remove greyed-out style
+                              message.textContent = "✅ Valid Business Email!";  
+                              document.getElementById('ACC_company_input').disabled = false
                           } else {
                               message.style.color = "red";
                               message.textContent = "❌ Invalid Email! Please use a business email (e.g., name@company.com).";
-                              submitButton.disabled = true; // Disable button
-                              submitButton.classList.add("disabled"); // Add greyed-out style
                           }
                       }
                   </script>
@@ -139,7 +136,7 @@
             <label class="form-label" id="label_company" for="ACC_project_input" aria-hidden="false"> 1. Select your
               company from the dropdown below </label>
             <div id="cid_company" class="form-input-wide" data-layout="half">
-              <select class="form-dropdown" id="ACC_company_input" name="Company" data-component="Sector">
+              <select class="form-dropdown" id="ACC_company_input" name="Company" data-component="Sector" disabled>
               </select>
             </div>
             <script>
@@ -148,27 +145,51 @@
               companyDropdown.addEventListener('change', function () {
                 let selectedCompanyIDOption = companyDropdown.options[companyDropdown.selectedIndex].value;
                 sessionStorage.setItem('selectedCompanyID', selectedCompanyIDOption);
-                let selectedCompanyNameOption = companyDropdown.options[companyDropdown.selectedIndex].innerText;
+                selectedCompanyNameOption = companyDropdown.options[companyDropdown.selectedIndex].innerText;
                 sessionStorage.setItem('selectedCompanyName', selectedCompanyNameOption);
 
                 console.log(selectedCompanyNameOption, selectedCompanyIDOption)
-
+                document.getElementById('ACC_input_5').disabled = false
               });
             </script>
           </li>
           <li class="form-line" data-type="control_dropdown" id="id_5"><label class="form-label" id="label_5"
               for="ACC_input_5" aria-hidden="false">2. Please select what role you require for the project</label>
             <div id="cid_5" class="form-input-wide" data-layout="half">
-              <select class="form-dropdown" id="ACC_input_5" name="ProjectRole" data-component="ProjectRole">
+              <select class="form-dropdown" id="ACC_input_5" name="ProjectRole" data-component="ProjectRole" disabled>
 
               </select>
+              <script>
+                let roleDropdownLocal = document.getElementById('ACC_input_5');
+                
+                roleDropdownLocal.addEventListener('change', async function () {
+                  additionalRoles = [];
+                  roleIDsArray = [];
+                  additionalRoles = await generateAdditionalRoles()
+                  additionalRoles.forEach(role => {
+                    roleIDsArray.push(role.id)
+                })
+                  
+                  if(selectedCompanyNameOption && selectedCompanyNameOption.includes("Aureos")){
+                    ocraRoles = await generateOCRARoles(selectedCompanyNameOption)
+                    ocraRoles.forEach(role => {
+                      additionalRoles.push(role)
+                      roleIDsArray.push(role.id)
+                    });
+                  }
+
+                  console.log("additionalRoles",additionalRoles)
+                  console.log("roleIDsArray",roleIDsArray)
+                  document.getElementById('ACC_Request_Form_btn').disabled = false
+              });
+              </script>
             </div>
 
           </li>
           <div id="cid_2" class="form-input-wide" data-layout="full">
             <div data-align="auto" class="form-buttons-wrapper form-buttons-auto   jsTest-button-wrapperField">
               <button type="button" id="ACC_Request_Form_btn" onclick="checkSelectedOptions()"
-                class="submitButton">Submit</button>
+                class="submitButton" disabled>Submit</button>
             </div>
           </div>
         </ul>
