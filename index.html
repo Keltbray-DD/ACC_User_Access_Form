@@ -169,6 +169,9 @@
                   additionalRoles.forEach(role => {
                     roleIDsArray.push(role.id)
                 })
+                const mainRole = accRoles.find(r => r.name === roleDropdownLocal.value)
+                additionalRoles.push({name:roleDropdownLocal.value,id:mainRole.id})
+                roleIDsArray.push(mainRole.id)
                   
                   if(selectedCompanyNameOption && selectedCompanyNameOption.includes("Aureos")){
                     ocraRoles = await generateOCRARoles(selectedCompanyNameOption)
