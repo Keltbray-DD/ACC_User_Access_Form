@@ -186,7 +186,7 @@ function getProjectDetails(pID){
           console.log('PM_Email',PM_Email)
           console.log('AA_Email',AA_Email)
           console.log('DC_Email',DC_Email)
-
+          document.getElementById('projectDetails').innerHTML = `<p><strong>Project Approvers: </strong>${AA_Email}</p>`
         } else{
           sessionStorage.setItem('PM_Email',"");
           sessionStorage.setItem('DC_Email',"");

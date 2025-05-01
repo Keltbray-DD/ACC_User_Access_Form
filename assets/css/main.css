@@ -579,3 +579,7 @@ ul li {
     font-family: Arial, sans-serif;
     font-size: 12px;
 }
+
+#projectDetails p {
+    margin-bottom: 0;
+}

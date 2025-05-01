@@ -1,5 +1,5 @@
 const appName = "ACC Access Request";
-const appVersion = "v1.2.3";
+const appVersion = "v1.2.4";
 
 const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
