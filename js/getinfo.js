@@ -150,35 +150,38 @@ function getProjectDetails(pID){
           var ProjectName_Local = projectdetails[0].ProjectName;
           sessionStorage.setItem('ProjectName',ProjectName_Local);
   
-          let projectManagers = projectdetails[0].ProjectManager
-          let documentControllers = projectdetails[0].DocumentController
-          let accessApprovers = projectdetails[0].AccessApprovers
+          let projectManagers = projectdetails[0].Project_Managers || ''
+          let documentControllers = projectdetails[0].Document_Controller || ''
+          let accessApprovers = projectdetails[0].Access_Approvers || ''
   
           console.log(projectManagers)
           console.log(accessApprovers)
           console.log(documentControllers)
 
-          if (projectManagers) {
-           emailStringProjectManagers = projectManagers.Email
-          }
-          if (documentControllers) {
-            emailStringDocumentControllers = documentControllers
-              .map((user) => user.Email)
-              .join(", ");
-          }
-          if (accessApprovers) {
-            emailStringAccessApprovers = accessApprovers
-              .map((user) => user.Email)
-              .join(", ");
-          }
+          PM_Email = projectManagers 
+          AA_Email = accessApprovers
+          DC_Email = documentControllers
+          // if (projectManagers) {
+          //  emailStringProjectManagers = projectManagers.Email
+          // }
+          // if (documentControllers) {
+          //   emailStringDocumentControllers = documentControllers
+          //     .map((user) => user.Email)
+          //     .join(", ");
+          // }
+          // if (accessApprovers) {
+          //   emailStringAccessApprovers = accessApprovers
+          //     .map((user) => user.Email)
+          //     .join(", ");
+          // }
 
-          console.log(emailStringProjectManagers)
-          console.log(emailStringDocumentControllers)
-          console.log(emailStringAccessApprovers)
+          // console.log(emailStringProjectManagers)
+          // console.log(emailStringDocumentControllers)
+          // console.log(emailStringAccessApprovers)
 
-          PM_Email = emailStringProjectManagers
-          AA_Email = emailStringAccessApprovers
-          DC_Email = emailStringDocumentControllers
+          // PM_Email = emailStringProjectManagers
+          // AA_Email = emailStringAccessApprovers
+          // DC_Email = emailStringDocumentControllers
 
           console.log('PM_Email',PM_Email)
           console.log('AA_Email',AA_Email)
