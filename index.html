@@ -103,12 +103,17 @@
                   autocomplete="section-input_7 email" value="" data-component="email"
                   aria-labelledby="label_7 sublabel_input_7" placeholder="e.g. example@company.com" onchange="validateEmail()" disabled></span>
                   <p id="message"></p>
+                  <div id="override" class="tooltip-container hidden">
+                    <a class="override-btn" onclick="overrideEmail()">⚠ Override and Use Email</a>
+                    <span class="tooltip-text">By overriding you accept responsibility for the use of this email being used on ACC</span>
+                  </div>
 
                   <script>
                       function validateEmail() {
                           const email = document.getElementById("ACC_input_7").value;
                           const submitButton = document.getElementById("ACC_Request_Form_btn");
                           const message = document.getElementById("message");
+                          const override = document.getElementById("override"); 
 
                           // Define blocked personal email providers
                           const blockedDomains = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "aol.com", "icloud.com", "live.com", "msn.com", "protonmail.com"];
@@ -118,10 +123,21 @@
                               message.style.color = "green";
                               message.textContent = "✅ Valid Business Email!";  
                               document.getElementById('ACC_company_input').disabled = false
+                              override.style.display = 'none'
                           } else {
                               message.style.color = "red";
                               message.textContent = "❌ Invalid Email! Please use a business email (e.g., name@company.com).";
+                              override.style.display = 'block'
                           }
+                      }
+
+                      function overrideEmail() {
+                        const message = document.getElementById("message");
+                        const override = document.getElementById("override"); 
+                        document.getElementById('ACC_company_input').disabled = false
+                        message.style.color = "orange";
+                        message.textContent = "⚠ Email Accepted under override";
+                        override.style.display = 'none'
                       }
                   </script>
             </div>

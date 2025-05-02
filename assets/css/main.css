@@ -583,3 +583,57 @@ ul li {
 #projectDetails p {
     margin-bottom: 0;
 }
+
+.hidden{
+    display: none;
+}
+.override-btn {
+    background-color: #ff4c4c;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: Arial, sans-serif;
+  }
+
+  .override-btn:hover {
+    background-color: #e60000;
+  }
+
+  .override-btn:active {
+    background-color: #cc0000;
+  }
+
+  .tooltip-container {
+    position: relative;
+    /* display: inline-block; */
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    width: 280px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 4px;
+
+    /* Positioning */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Fade effect */
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }

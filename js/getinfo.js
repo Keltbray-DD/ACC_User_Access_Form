@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     await runGetRoles()
 
     await hideLoadingScreen(loadingScreen)
-    const enriched = getProjectAdminRoleIdsFor("Project Manager", rolesData, accRoles);
-    console.log(enriched);
+    // const enriched = getProjectAdminRoleIdsFor("Project Manager", rolesData, accRoles);
+    // console.log(enriched);
   }
 });
 
@@ -88,6 +88,7 @@ async function runGetProjects() {
 async function runGetRoles() {
   rolesData = await getProjectRoles()
   console.log("Aureos Roles",rolesData);
+  rolesData.sort((a, b) => a.role.localeCompare(b.role))
   await populateRoles();
   accRoles = await getACCRoles()
   console.log("ACC Roles",accRoles);
@@ -327,7 +328,7 @@ async function getAccessToken(scopeInput){
         //body: JSON.stringify(bodyData)
     };
 
-    const apiUrl = "https://developer.api.autodesk.com/hq/v1/regions/eu/accounts/"+account_id+"/companies?limit=100";
+    const apiUrl = "https://developer.api.autodesk.com/construction/admin/v1/accounts/"+account_id+"/companies?limit=200";
     //console.log(apiUrl)
     //console.log(requestOptions)
     repsonseData = await fetch(apiUrl,requestOptions)
@@ -335,7 +336,7 @@ async function getAccessToken(scopeInput){
         .then(data => {
             const JSONdata = data
             console.log(JSONdata)
-        return JSONdata
+        return JSONdata.results
         })
         .catch(error => console.error('Error fetching data:', error));
 
