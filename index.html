@@ -183,15 +183,16 @@
                 roleDropdownLocal.addEventListener('change', async function () {
                   additionalRoles = [];
                   roleIDsArray = [];
-                  additionalRoles = await generateAdditionalRoles()
-                  additionalRoles.forEach(role => {
-                    roleIDsArray.push(role.id)
-                })
+
                 const mainRole = accRoles.find(r => r.name === roleDropdownLocal.value)
                 additionalRoles.push({name:roleDropdownLocal.value,id:mainRole.id})
                 roleIDsArray.push(mainRole.id)
                   
                   if(selectedCompanyNameOption && selectedCompanyNameOption.includes("Aureos")){
+                    additionalRoles = await generateAdditionalRoles()
+                      additionalRoles.forEach(role => {
+                        roleIDsArray.push(role.id)
+                    })
                     ocraRoles = await generateOCRARoles(selectedCompanyNameOption)
                     ocraRoles.forEach(role => {
                       additionalRoles.push(role)

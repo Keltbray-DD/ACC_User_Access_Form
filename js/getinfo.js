@@ -71,7 +71,7 @@ async function runGetProjects() {
       ProjectID: ProjectListRaw[i].Title,
     });
   }
-
+ProjectList.sort((a, b) => a.ProjectName.localeCompare(b.ProjectName))
   console.log("Filtered Project List", ProjectList);
   sessionStorage.setItem(ProjectList, JSON.stringify(ProjectList));
 
