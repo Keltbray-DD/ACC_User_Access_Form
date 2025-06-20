@@ -1,5 +1,5 @@
 const appName = "ACC Access Request";
-const appVersion = "v1.3.2";
+const appVersion = "v1.3.3";
 
 const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
@@ -32,7 +32,7 @@ let accessToken;
 let aureosCompanyList = [
     {code:"AID", name:"Aureos IDEC"},
     {code:"ARE", name:"Aureos Renewables"},
-    {code:"ATS", name:"Aureos Technical Solutions"},
+    {code:"AUT", name:"Aureos Technical Solutions"},
     {code:"AUE", name:"Aureos Energy"},
     {code:"AUH", name:"Aureos Highways"},
     {code:"AUI", name:"Aureos Infrastructure"},
