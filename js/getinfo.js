@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await runGetProjects()
     checkURL()
     await runGetCompanies()
+    await runGetAureosBUs()
     await runGetRoles()
 
     await hideLoadingScreen(loadingScreen)
@@ -69,10 +70,11 @@ async function runGetProjects() {
     ProjectList.push({
       ProjectName: ProjectListRaw[i].ProjectName,
       ProjectID: ProjectListRaw[i].Title,
+      buCode: ProjectListRaw[i].ProjectName.substring(0,3)
     });
   }
-ProjectList.sort((a, b) => a.ProjectName.localeCompare(b.ProjectName))
-  console.log("Filtered Project List", ProjectList);
+  ProjectList.sort((a, b) => a.ProjectName.localeCompare(b.ProjectName))
+  console.log("Project List", ProjectList);
   sessionStorage.setItem(ProjectList, JSON.stringify(ProjectList));
 
   const projectDropdown = document.getElementById("ACC_project_input");
@@ -87,12 +89,16 @@ ProjectList.sort((a, b) => a.ProjectName.localeCompare(b.ProjectName))
 
 async function runGetRoles() {
   rolesData = await getProjectRoles()
-  console.log("Aureos Roles",rolesData);
   rolesData.sort((a, b) => a.role.localeCompare(b.role))
-  await populateRoles();
+  await populateRoles(rolesData);
   accRoles = await getACCRoles()
   console.log("ACC Roles",accRoles);
   console.log("Aureos Roles",rolesData);
+}
+
+async function runGetAureosBUs() {
+  aureosBUs = await getAureosBUList()
+  console.log("Aureos BUs",aureosBUs);
 }
 
 function getProjectAdminRoleIdsFor(inputRole, rolesArray, metadataArray) {
@@ -232,18 +238,7 @@ async function getProjectRoles(){
 
 
   // Function to filter roles based on selected market
-async function populateRoles() {
 
-    // Clear existing options
-    roleDropdown.innerHTML = '<option value=""></option>';
-
-      rolesData.forEach(role => {
-        const option = document.createElement('option');
-        option.value = role.role;
-        option.text = role.role;
-        roleDropdown.add(option);
-      });
-  }
 
   async function getACCRoles(){
  
@@ -296,7 +291,7 @@ async function getAccessToken(scopeInput){
   const apiUrl = "https://prod-30.uksouth.logic.azure.com:443/workflows/df0aebc4d2324e98bcfa94699154481f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jHsW0eISklveK7XAJcG0nhfEnffX62AP0mLqJrtLq9c";
   //console.log(apiUrl)
   //console.log(requestOptions)
-  signedURLData = await fetch(apiUrl,requestOptions)
+  repsonseData = await fetch(apiUrl,requestOptions)
       .then(response => response.json())
       .then(data => {
           const JSONdata = data
@@ -308,7 +303,7 @@ async function getAccessToken(scopeInput){
       .catch(error => console.error('Error fetching data:', error));
 
 
-  return signedURLData
+  return repsonseData
   }
 
   async function getCompnaies(AccessToken){
@@ -335,8 +330,33 @@ async function getAccessToken(scopeInput){
         .then(response => response.json())
         .then(data => {
             const JSONdata = data
-            console.log(JSONdata)
+            // console.log(JSONdata)
         return JSONdata.results
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    return repsonseData
+  }
+  async function getAureosBUList(){
+
+    const headers = {
+        'Content-Type':'application/json'
+    };
+
+    const requestOptions = {
+        method: 'GET',
+        headers: headers,
+    };
+
+    const apiUrl = "https://prod-61.uksouth.logic.azure.com:443/workflows/be34064024814312ac95d2ce0ba03b40/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7diPCJJS1Q1RU2RvWpO-d2TnJos7YzfQK3ELzwBxEJM";
+    //console.log(apiUrl)
+    //console.log(requestOptions)
+    repsonseData = await fetch(apiUrl,requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            const JSONdata = data
+            // console.log(JSONdata)
+        return JSONdata
         })
         .catch(error => console.error('Error fetching data:', error));
 

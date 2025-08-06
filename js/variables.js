@@ -1,5 +1,5 @@
 const appName = "ACC Access Request";
-const appVersion = "v1.3.3";
+const appVersion = "v1.4.0";
 
 const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
@@ -14,18 +14,23 @@ let ProjectList =[]
 let ProjectListRaw
 let projectListDetails =[]
 let ACC_project_input_dropdown
+let projectDropdown
 let marketDropdown
 let roleDropdown
+let companyDropdown
 let rolesData
 let accRoles
 let additionalRoles
 let roleIDsArray
+let aureosBUs
 
 let emailStringProjectManagers
 let emailStringDocumentControllers
 let emailStringAccessApprovers
 
 let selectedCompanyNameOption
+let selectedProjectNameOption
+let selectedProjectIDOption
 
 let accessToken;
 

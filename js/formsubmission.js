@@ -136,12 +136,12 @@ async function postUserToSP(){
     const selectedRole = document.getElementById("ACC_input_5").value;
 
     const role = rolesData.find(p => p.role === selectedRole);
-    companyCode = aureosCompanyList.find(r => r.name === companyName)
+    companyCode = aureosBUs.find(r => r.bu_name === companyName)
     console.log(companyCode)
     if (role) {
       const result = role.ocraRoles.map(roleName => {
         console.log(roleName)
-        const combinedName = `${companyCode.code}_OCRA_${roleName.Value}`
+        const combinedName = `${companyCode.bu_code}_OCRA_${roleName.Value}`
         console.log(combinedName)
         const accRole = accRoles.find(r => r.name === combinedName);
         return accRole ? { name: combinedName, id: accRole.id } : null;

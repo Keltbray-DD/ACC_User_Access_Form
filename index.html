@@ -6,6 +6,7 @@
   <script src="js/variables.js"></script>
   <script src="js/acc_functions.js"></script>
   <script src="js/getinfo.js"></script>
+  <script src="js/main.js"></script>
   <script src="js/formsubmission.js"></script>
   <link rel="stylesheet" href="assets/css/main.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
@@ -14,7 +15,7 @@
   sizes="32x32">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <title>Digital Delivery Hub - ACC Access Request Form</title>
+  <title>Aureos ACC Access Request Form</title>
 </head>
 
 <body>
@@ -47,22 +48,7 @@
         </div>
         <div id="projectDetails"></div>
         <script>
-          let projectDropdown = document.getElementById('ACC_project_input');
-
-          projectDropdown.addEventListener('change', function () {
-            let selectedProjectNameOption = projectDropdown.options[projectDropdown.selectedIndex].innerText;
-            sessionStorage.setItem('selectedProjectName', selectedProjectNameOption);
-
-            let selectedProjectIDOption = projectDropdown.value;
-            sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
-
-            console.log(selectedProjectNameOption, selectedProjectIDOption)
-            
-            document.getElementById('ACC_first_6').disabled = false
-            document.getElementById('ACC_last_6').disabled = false
-            document.getElementById('ACC_input_7').disabled = false
-
-          });
+          
         </script>
       </div>
       <div class="form-group">
@@ -157,17 +143,7 @@
               </select>
             </div>
             <script>
-              let companyDropdown = document.getElementById('ACC_company_input');
-
-              companyDropdown.addEventListener('change', function () {
-                let selectedCompanyIDOption = companyDropdown.options[companyDropdown.selectedIndex].value;
-                sessionStorage.setItem('selectedCompanyID', selectedCompanyIDOption);
-                selectedCompanyNameOption = companyDropdown.options[companyDropdown.selectedIndex].innerText;
-                sessionStorage.setItem('selectedCompanyName', selectedCompanyNameOption);
-
-                console.log(selectedCompanyNameOption, selectedCompanyIDOption)
-                document.getElementById('ACC_input_5').disabled = false
-              });
+              
             </script>
           </li>
           <li class="form-line" data-type="control_dropdown" id="id_5"><label class="form-label" id="label_5"
@@ -178,32 +154,7 @@
               </select>
               <p>If you want to know what each role has access to use the <a href="https://keltbray-dd.github.io/Aureos_File_Mapping_Tool/">ACC Mapping Tool</a> and go to the Roles tab to find out more</p>
               <script>
-                let roleDropdownLocal = document.getElementById('ACC_input_5');
                 
-                roleDropdownLocal.addEventListener('change', async function () {
-                  additionalRoles = [];
-                  roleIDsArray = [];
-
-                const mainRole = accRoles.find(r => r.name === roleDropdownLocal.value)
-                additionalRoles.push({name:roleDropdownLocal.value,id:mainRole.id})
-                roleIDsArray.push(mainRole.id)
-                  
-                  if(selectedCompanyNameOption && selectedCompanyNameOption.includes("Aureos")){
-                    additionalRoles = await generateAdditionalRoles()
-                      additionalRoles.forEach(role => {
-                        roleIDsArray.push(role.id)
-                    })
-                    ocraRoles = await generateOCRARoles(selectedCompanyNameOption)
-                    ocraRoles.forEach(role => {
-                      additionalRoles.push(role)
-                      roleIDsArray.push(role.id)
-                    });
-                  }
-
-                  console.log("additionalRoles",additionalRoles)
-                  console.log("roleIDsArray",roleIDsArray)
-                  document.getElementById('ACC_Request_Form_btn').disabled = false
-              });
               </script>
             </div>
 

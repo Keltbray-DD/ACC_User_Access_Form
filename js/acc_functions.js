@@ -26,7 +26,7 @@
             .then(data => {
                 const JSONdata = data
     
-            console.log(JSONdata)
+            // console.log(JSONdata)
             
             return JSONdata
             })
