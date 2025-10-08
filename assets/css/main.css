@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     min-height: 100%;
@@ -7,9 +7,17 @@ body {
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
-
-    background: rgb(255, 255, 255);
-    background: linear-gradient(158deg, rgba(255, 255, 255, 1) 0%, rgba(59, 219, 135, 1) 37%, rgba(111, 188, 247, 1) 65%, rgba(4, 113, 190, 1) 100%);
+  
+    background: rgb(255,255,255);
+    background: linear-gradient(158deg, rgba(255,255,255,1) 0%, rgba(59,219,135,1) 37%, rgba(111,188,247,1) 65%, rgba(4,113,190,1) 100%);
+    /* Don’t repeat the gradient image */
+    background-repeat: no-repeat;
+    
+    /* Keep the background fixed in place as the user scrolls */
+    background-attachment: fixed;
+    
+    /* Make sure the gradient covers the entire screen */
+    background-size: cover;
 }
 
 html {
@@ -636,4 +644,23 @@ ul li {
   .tooltip-container:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+  }
+
+  .folder-grid{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+.folder-grid p{
+    width: 100%;
+    margin: 0;
+    margin-bottom: 10px;
+}
+  .folder-name{
+    display: inline;
+    padding: 5px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+    margin: 0;
   }

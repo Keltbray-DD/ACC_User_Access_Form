@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     roleIDsArray = [];
 
     const mainRole = accRoles.find((r) => r.name === roleDropdown.value);
+    const mainAureosRole = rolesData.find((r) => r.role === roleDropdown.value);
     additionalRoles.push({ name: roleDropdown.value, id: mainRole.id });
     roleIDsArray.push(mainRole.id);
     const selectedProjectDetails = ProjectList.filter(item => item.ProjectID == selectedProjectIDOption)
@@ -66,8 +67,24 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("additionalRoles", additionalRoles);
     console.log("roleIDsArray", roleIDsArray);
     document.getElementById("ACC_Request_Form_btn").disabled = false;
+
+    await createRoleAccessDisplay(mainAureosRole)
   });
 });
+
+async function createRoleAccessDisplay(roleData) {
+  const roleAccessDisplay = document.getElementById("roleAccessDisplay")
+  roleAccessDisplay.innerHTML = '<p>The role you have select will have access to the folders listed below</p>'
+  const roleFolders = roleData.folderAccess.sort((a, b) => a.Value.localeCompare(b.Value))
+  
+  roleFolders.forEach(element => {
+    const folder = document.createElement("div");
+    folder.classList.add('folder-name');
+    folder.textContent = element.Value;
+    roleAccessDisplay.appendChild(folder)
+  });
+
+}
 
 async function populateRoles(role_array) {
   // Clear existing options
