@@ -144,7 +144,7 @@ function getProjectDetails(pID){
       body: JSON.stringify(bodyData)
   };
 
-    var apiUrl_getProjectDetails = 'https://prod-49.uksouth.logic.azure.com:443/workflows/6aa2657ac7f6493daa4a7d22650501f0/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=5joSV1MRVUbO7SK-o15RMdnzSD2w39R-ynkFsTM2Uw0';
+    var apiUrl_getProjectDetails = 'https://default917b4d06d2e9475983a3e7369ed74e.8f.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6aa2657ac7f6493daa4a7d22650501f0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8EtCrlcGu4TjxhRuJMR1kp6aS8iX_nlvYvddpBX0IRE';
     fetch(apiUrl_getProjectDetails,requestOptions)
       .then(response => response.json())
       .then(data => {
@@ -288,7 +288,7 @@ async function getAccessToken(scopeInput){
       body: JSON.stringify(bodyData)
   };
 
-  const apiUrl = "https://prod-30.uksouth.logic.azure.com:443/workflows/df0aebc4d2324e98bcfa94699154481f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jHsW0eISklveK7XAJcG0nhfEnffX62AP0mLqJrtLq9c";
+  const apiUrl = "https://default917b4d06d2e9475983a3e7369ed74e.8f.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/df0aebc4d2324e98bcfa94699154481f/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=igiodIb-lGf7MTGYIlPATMr-JbyDeztuALW5F6IIaNs";
   //console.log(apiUrl)
   //console.log(requestOptions)
   repsonseData = await fetch(apiUrl,requestOptions)
@@ -348,7 +348,7 @@ async function getAccessToken(scopeInput){
         headers: headers,
     };
 
-    const apiUrl = "https://prod-61.uksouth.logic.azure.com:443/workflows/be34064024814312ac95d2ce0ba03b40/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7diPCJJS1Q1RU2RvWpO-d2TnJos7YzfQK3ELzwBxEJM";
+    const apiUrl = "https://default917b4d06d2e9475983a3e7369ed74e.8f.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/be34064024814312ac95d2ce0ba03b40/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7bEsh2LzW06yCZFpQEQRtkmyJmFtyCPjoeiw747jF7U";
     //console.log(apiUrl)
     //console.log(requestOptions)
     repsonseData = await fetch(apiUrl,requestOptions)
