@@ -100,7 +100,7 @@ async function populateRoles(role_array) {
 
 async function filterRoles(role_array,company,bu_code) {
     let returnData
-    if(company.includes("Aureos") || company.includes("AS Design Engineering")){
+    if(company.includes("Aureos")){
         const filtered_array = role_array.filter(item => item.external_or_internal == "Internal")
         // console.log(filtered_array,bu_code)
         let tempRoleArray = []
