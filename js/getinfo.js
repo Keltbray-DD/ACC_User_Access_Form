@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     await runGetProjects()
     checkURL()
-    await runGetCompanies()
+    
     await runGetAureosBUs()
     await runGetRoles()
 
@@ -47,8 +47,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 // Select the dropdown element
 
-async function runGetCompanies() {
-  CompaniesList = await getCompnaies(accessToken)
+async function runGetCompanies(projectID) {
+  CompaniesList = await getCompnaies(accessToken,projectID)
+  console.log("Companies",CompaniesList)
   CompaniesList = CompaniesList.sort((a, b) => a.name.localeCompare(b.name))
   console.log("Companies List",CompaniesList)
   sessionStorage.setItem(CompaniesList,JSON.stringify(CompaniesList));
@@ -126,8 +127,8 @@ function getProjectAdminRoleIdsFor(inputRole, rolesArray, metadataArray) {
 }
 
 
-function getProjectDetails(pID){
-
+async function getProjectDetails(pID){
+  await runGetCompanies(pID)
   async function fetchData(){
 
     const bodyData = {
@@ -306,7 +307,7 @@ async function getAccessToken(scopeInput){
   return repsonseData
   }
 
-  async function getCompnaies(AccessToken){
+  async function getCompnaies(AccessToken,projectID){
 
     const bodyData = {
 
@@ -323,15 +324,15 @@ async function getAccessToken(scopeInput){
         //body: JSON.stringify(bodyData)
     };
 
-    const apiUrl = "https://developer.api.autodesk.com/construction/admin/v1/accounts/"+account_id+"/companies?limit=200";
+    const apiUrl = "https://developer.api.autodesk.com/hq/v1/accounts/"+account_id+"/projects/"+projectID+"/companies?limit=100";
     //console.log(apiUrl)
     //console.log(requestOptions)
     repsonseData = await fetch(apiUrl,requestOptions)
         .then(response => response.json())
         .then(data => {
             const JSONdata = data
-            // console.log(JSONdata)
-        return JSONdata.results
+            console.log(JSONdata)
+        return JSONdata
         })
         .catch(error => console.error('Error fetching data:', error));
 
@@ -396,7 +397,7 @@ async function getAccessToken(scopeInput){
   }
 
   // Function to set the default selected value
-  function setDefaultSelectedValue(id) {
+  async function setDefaultSelectedValue(id) {
     var dropdown = document.getElementById('ACC_project_input');
     var defaultValue = id; // Replace '456' with the desired default value
     console.log(defaultValue)
@@ -413,6 +414,7 @@ async function getAccessToken(scopeInput){
             sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
 
             getProjectDetails(defaultValue)
+            
             break;
         }
     }
