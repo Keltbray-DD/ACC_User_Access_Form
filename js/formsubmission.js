@@ -43,14 +43,64 @@ async function checkSelectedOptions() {
 
   response = await postUserToSP()
   if(response.status === 202){
-    alert("Access Request Successfully Submitted")
-    resetForm()
+    showSuccessModal()
   }else{
     alert("Access Request was not Submitted")
   }
 }
-function resetForm() {
-  document.getElementById("ACC_Access_Request_Form").reset()
+
+function showSuccessModal() {
+  document.getElementById("successModal").style.display = "flex";
+}
+function hideSuccessModal() {
+  document.getElementById("successModal").style.display = "none";
+}
+
+// Modal actions. "myself" keeps the requester's name + email so they can raise
+// another request without retyping; "someone else" clears everything.
+function newRequestForMyself() { startNewForm(true); hideSuccessModal(); }
+function newRequestForSomeoneElse() { startNewForm(false); hideSuccessModal(); }
+
+// Reset the form back to its initial, fully-locked state (project -> email ->
+// company -> role). Optionally keep the requester's identity fields.
+function startNewForm(keepIdentity) {
+  const first = document.getElementById("ACC_first_6");
+  const last = document.getElementById("ACC_last_6");
+  const email = document.getElementById("ACC_input_7");
+  const savedFirst = first.value, savedLast = last.value, savedEmail = email.value;
+
+  document.getElementById("ACC_Access_Request_Form").reset();
+
+  // Re-lock the cascade exactly as on first load.
+  first.disabled = true;
+  last.disabled = true;
+  email.disabled = true;
+  delete first.dataset.autofilled;
+  delete last.dataset.autofilled;
+
+  const company = document.getElementById("ACC_company_input");
+  const role = document.getElementById("ACC_input_5");
+  company.innerHTML = '<option value=""></option>';
+  company.disabled = true;
+  role.innerHTML = '<option value=""></option>';
+  role.disabled = true;
+
+  document.getElementById("ACC_Request_Form_btn").disabled = true;
+
+  // Clear transient UI + state left over from the previous request.
+  document.getElementById("message").textContent = "";
+  const override = document.getElementById("override");
+  if (override) override.style.display = "none";
+  document.getElementById("roleAccessDisplay").innerHTML = "";
+  document.getElementById("projectDetails").innerHTML = "";
+  additionalRoles = [];
+  roleIDsArray = [];
+
+  if (keepIdentity) {
+    first.value = savedFirst;
+    last.value = savedLast;
+    email.value = savedEmail;
+  }
 }
 async function postUserToSP(){
   // OCRARole_Local = await searchArray($("#ACC_input_5").val());

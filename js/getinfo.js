@@ -407,6 +407,10 @@ async function getAccessToken(scopeInput){
             dropdown.options[i].selected = true;
             let selectedProjectNameOption = dropdown.options[dropdown.selectedIndex].innerText;
             sessionStorage.setItem('selectedProjectName', selectedProjectNameOption);
+
+            // Mirror the preselected project into the search box (the <select> is hidden).
+            const searchInput = document.getElementById('projectSearch');
+            if (searchInput) searchInput.value = selectedProjectNameOption;
             console.log()
             let selectedProjectIDOption = dropdown.value;
             console.log(selectedProjectIDOption)

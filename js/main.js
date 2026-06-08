@@ -16,6 +16,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById('ACC_last_6').disabled = false
         document.getElementById('ACC_input_7').disabled = false
 
+        // If the email is already filled (e.g. starting another request for
+        // yourself), re-validate it so the company field unlocks without retyping.
+        const emailEl = document.getElementById('ACC_input_7');
+        if (emailEl.value && typeof validateEmail === 'function') validateEmail();
+
     });
 
   companyDropdown.addEventListener("change", async function () {
@@ -71,6 +76,43 @@ document.addEventListener("DOMContentLoaded", async function () {
     await createRoleAccessDisplay(mainAureosRole)
   });
 });
+
+// Auto-populate First / Last name from the email's local part, e.g.
+// "josh.cole@aureos.com" -> First: "Josh", Last: "Cole". Splits on . _ -, strips
+// digits, and only writes to a field that is empty or still holds a value this
+// function previously set (so manual edits are never overwritten).
+function autofillNamesFromEmail() {
+  const emailEl = document.getElementById("ACC_input_7");
+  const firstEl = document.getElementById("ACC_first_6");
+  const lastEl = document.getElementById("ACC_last_6");
+  if (!emailEl || !firstEl || !lastEl) return;
+
+  const email = (emailEl.value || "").trim();
+  const at = email.indexOf("@");
+  if (at <= 0) return;
+
+  const tokens = email
+    .slice(0, at)
+    .split(/[._\-]+/)
+    .map((t) => t.replace(/[^a-zA-Z]/g, ""))
+    .filter(Boolean);
+  if (!tokens.length) return;
+
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  const first = cap(tokens[0]);
+  const last = tokens.length > 1 ? tokens.slice(1).map(cap).join(" ") : "";
+
+  applyIfUntouched(firstEl, first);
+  applyIfUntouched(lastEl, last);
+}
+
+function applyIfUntouched(el, value) {
+  const prevAuto = el.dataset.autofilled || "";
+  if (el.value === "" || el.value === prevAuto) {
+    el.value = value;
+    el.dataset.autofilled = value;
+  }
+}
 
 async function createRoleAccessDisplay(roleData) {
   const roleAccessDisplay = document.getElementById("roleAccessDisplay")
