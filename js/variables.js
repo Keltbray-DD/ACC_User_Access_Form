@@ -1,4 +1,4 @@
-const appName = "ACC Access Request";
+const appName = "Forma Access Request";
 const appVersion = "v1.7.0";
 
 const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
