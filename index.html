@@ -21,8 +21,16 @@
 
 <body>
   <div id="loadingScreen">
-    <div class="spinner"></div>
-    <p>Loading Forma Data...</p>
+    <div class="loading-panel">
+      <div class="loading-spinner-circle"></div>
+      <div class="loading-title">Loading Forma Access Request…</div>
+      <ul class="loading-steps" id="loadingSteps">
+        <li class="step pending" data-step="auth"><span class="step-icon"></span><span class="step-label">Authenticating with Autodesk</span></li>
+        <li class="step pending" data-step="projects"><span class="step-icon"></span><span class="step-label">Loading projects</span></li>
+        <li class="step pending" data-step="bus"><span class="step-icon"></span><span class="step-label">Loading business units</span></li>
+        <li class="step pending" data-step="roles"><span class="step-icon"></span><span class="step-label">Loading roles</span></li>
+      </ul>
+    </div>
   </div>
   <div class="top-bar">
     <img src="https://www.aureos.com/wp-content/themes/keltbray/assets/img/logo/AUREOS_logo_wh.svg" 

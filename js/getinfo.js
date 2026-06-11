@@ -20,16 +20,26 @@ document.addEventListener('DOMContentLoaded', async function() {
   initalStartUp()
   async function initalStartUp(){
     await showLoadingScreen(loadingScreen)
+    setLoadingStep('auth', 'active')
     try{
       accessToken = await getAccessToken("account:read data:read")
     }catch{
       console.log("Error")
     }
+    setLoadingStep('auth', 'done')
+
+    setLoadingStep('projects', 'active')
     await runGetProjects()
     checkURL()
-    
+    setLoadingStep('projects', 'done')
+
+    setLoadingStep('bus', 'active')
     await runGetAureosBUs()
+    setLoadingStep('bus', 'done')
+
+    setLoadingStep('roles', 'active')
     await runGetRoles()
+    setLoadingStep('roles', 'done')
 
     await hideLoadingScreen(loadingScreen)
     // const enriched = getProjectAdminRoleIdsFor("Project Manager", rolesData, accRoles);
@@ -44,6 +54,16 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Hide the loading screen
   async function hideLoadingScreen(element) {
     element.style.display = 'none';
+  }
+
+  // Mark a startup step as pending / active / done in the loading checklist.
+  function setLoadingStep(stepId, stateName) {
+    const li = document.querySelector(`#loadingSteps [data-step="${stepId}"]`);
+    if (!li) return;
+    li.classList.remove('pending', 'active', 'done');
+    li.classList.add(stateName);
+    const icon = li.querySelector('.step-icon');
+    if (icon) icon.textContent = stateName === 'done' ? '✓' : '';
   }
 // Select the dropdown element
 
@@ -71,6 +91,7 @@ async function runGetProjects() {
     ProjectList.push({
       ProjectName: ProjectListRaw[i].ProjectName,
       ProjectID: ProjectListRaw[i].Title,
+      ProjectCode: ProjectListRaw[i].ProjectCode,
       buCode: ProjectListRaw[i].ProjectName.substring(0,3)
     });
   }
@@ -84,6 +105,7 @@ async function runGetProjects() {
     const option = document.createElement("option");
     option.text = project.ProjectName;
     option.value = project.ProjectID;
+    option.dataset.sub = project.ProjectCode || "";
     projectDropdown.add(option);
   });
 }

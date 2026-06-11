@@ -23,11 +23,12 @@ function makeSearchableSelect(cfg) {
 
   let activeIdx = -1;
 
-  // [{ name, value }] from the select's current options (skip the empty placeholder).
+  // [{ name, value, sub }] from the select's current options (skip the empty
+  // placeholder). `sub` is an optional second line, e.g. the project code.
   const options = () =>
     Array.from(select.options)
       .filter((o) => o.value !== "")
-      .map((o) => ({ name: o.text, value: o.value }));
+      .map((o) => ({ name: o.text, value: o.value, sub: o.dataset.sub || "" }));
 
   function selectedText() {
     const o = select.options[select.selectedIndex];
@@ -55,7 +56,9 @@ function makeSearchableSelect(cfg) {
   function renderList(query) {
     const q = (query || "").trim().toLowerCase();
     const all = options();
-    const matches = q ? all.filter((o) => o.name.toLowerCase().includes(q)) : all;
+    const matches = q
+      ? all.filter((o) => o.name.toLowerCase().includes(q) || (o.sub && o.sub.toLowerCase().includes(q)))
+      : all;
     if (!matches.length) {
       list.innerHTML = '<div class="combo-empty">No matches</div>';
       return;
@@ -64,7 +67,19 @@ function makeSearchableSelect(cfg) {
     matches.slice(0, 200).forEach((o) => {
       const row = document.createElement("div");
       row.className = "combo-row";
-      row.textContent = o.name;
+
+      const main = document.createElement("div");
+      main.className = "combo-row__main";
+      main.textContent = o.name;
+      row.appendChild(main);
+
+      if (o.sub) {
+        const sub = document.createElement("div");
+        sub.className = "combo-row__sub";
+        sub.textContent = o.sub;
+        row.appendChild(sub);
+      }
+
       row.addEventListener("mousedown", (ev) => ev.preventDefault()); // keep input focus on click
       row.addEventListener("click", () => commit(o));
       list.appendChild(row);
