@@ -250,6 +250,34 @@ option:checked {
     color: #fff;
 }
 
+/* Justification textarea */
+.form-textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 16px;
+    resize: vertical;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-textarea:focus {
+    border-color: #4CAF50;
+}
+
+.form-textarea:disabled {
+    background: #f0f0eb;
+    border-color: #808080;
+    cursor: not-allowed;
+}
+
+.form-textarea::placeholder {
+    color: #aaa;
+}
+
 /* Style for the progress bar */
 progress {
     width: calc(100% - 20px);

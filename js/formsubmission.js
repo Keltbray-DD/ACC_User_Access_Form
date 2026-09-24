@@ -10,6 +10,7 @@ async function checkSelectedOptions() {
   const EmailInput = document.getElementById('ACC_input_7');
   const roleDropdown = document.getElementById('ACC_input_5');
   const companyDropdown = document.getElementById('ACC_company_input');
+  const justificationInput = document.getElementById('ACC_justification');
 
   if (projectDropdown.value === "") {
     alert("Please select a project from the dropdown.");
@@ -38,6 +39,11 @@ async function checkSelectedOptions() {
 
   if (roleDropdown.value === "") {
     alert("Please select an option from the role dropdown.");
+    return
+  }
+
+  if (justificationInput.value.trim() === "") {
+    alert("Please provide a justification for why you require this access.");
     return
   }
 
@@ -85,6 +91,7 @@ function startNewForm(keepIdentity) {
   role.innerHTML = '<option value=""></option>';
   role.disabled = true;
 
+  document.getElementById("ACC_justification").disabled = true;
   document.getElementById("ACC_Request_Form_btn").disabled = true;
 
   // Clear transient UI + state left over from the previous request.
@@ -111,6 +118,7 @@ async function postUserToSP(){
         firstName:$("#ACC_first_6").val(),
         lastName:$("#ACC_last_6").val(),
         ProjectRole: $("#ACC_input_5").val(),
+        Justification: $("#ACC_justification").val(),
         AdditionalRoles: additionalRoles,
         roleIDs: roleIDsArray,
         PMEmail: PM_Email,

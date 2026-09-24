@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     console.log("additionalRoles", additionalRoles);
     console.log("roleIDsArray", roleIDsArray);
+    document.getElementById("ACC_justification").disabled = false;
     document.getElementById("ACC_Request_Form_btn").disabled = false;
 
     await createRoleAccessDisplay(mainAureosRole)
