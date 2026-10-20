@@ -32,8 +32,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     sessionStorage.setItem("selectedCompanyName", selectedCompanyNameOption);
 
     console.log(selectedCompanyNameOption, selectedCompanyIDOption);
+    // Guard the project lookup: if it misses, reading .buCode used to throw and
+    // abort the handler, so the role field never unlocked. Fall back to no
+    // bu_code (filterRoles just matches nothing extra) rather than crashing.
     const selectedProjectDetails = ProjectList.filter(item => item.ProjectID == selectedProjectIDOption)
-    const filteredRoles = await filterRoles(rolesData,selectedCompanyNameOption,selectedProjectDetails[0].buCode)
+    const buCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
+    const filteredRoles = await filterRoles(rolesData, selectedCompanyNameOption, buCode)
     await populateRoles(filteredRoles)
 
     document.getElementById("ACC_input_5").disabled = false;
@@ -43,38 +47,65 @@ document.addEventListener("DOMContentLoaded", async function () {
     additionalRoles = [];
     roleIDsArray = [];
 
+    // Unlock the final step up front. Everything below is optional enrichment of
+    // the request payload (additional / OCRA roles, access display) that depends
+    // on data lookups which can legitimately miss; a miss must never leave the
+    // user with a role selected but justification + Submit still greyed out.
+    document.getElementById("ACC_justification").disabled = false;
+    document.getElementById("ACC_Request_Form_btn").disabled = false;
+
     const mainRole = accRoles.find((r) => r.name === roleDropdown.value);
     const mainAureosRole = rolesData.find((r) => r.role === roleDropdown.value);
-    additionalRoles.push({ name: roleDropdown.value, id: mainRole.id });
-    roleIDsArray.push(mainRole.id);
+
+    // Only add the main ACC role id when we actually matched one. A name
+    // mismatch between the Aureos role list and the ACC role list used to throw
+    // on mainRole.id and abort the handler before the unlock above ran.
+    if (mainRole) {
+      additionalRoles.push({ name: roleDropdown.value, id: mainRole.id });
+      roleIDsArray.push(mainRole.id);
+    } else {
+      console.warn("No matching ACC role found for", roleDropdown.value);
+    }
+
     const selectedProjectDetails = ProjectList.filter(item => item.ProjectID == selectedProjectIDOption)
-    
+
     if (
       selectedCompanyNameOption &&
       selectedCompanyNameOption.includes("Aureos")
     ) {
+      try {
         const selectedAureosBU = aureosBUs.filter(item => item.bu_name == selectedCompanyNameOption)
-        console.log(selectedProjectDetails[0].buCode, selectedAureosBU[0].bu_code)
-        if(selectedProjectDetails[0].buCode == selectedAureosBU[0].bu_code){
-            additionalRoles = await generateAdditionalRoles();
-            additionalRoles.forEach((role) => {
-                roleIDsArray.push(role.id);
+        const projectBuCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
+        const aureosBuCode = selectedAureosBU[0] && selectedAureosBU[0].bu_code;
+        console.log(projectBuCode, aureosBuCode)
+        if (projectBuCode && aureosBuCode && projectBuCode == aureosBuCode) {
+          const extraRoles = await generateAdditionalRoles();
+          if (extraRoles) {
+            additionalRoles = extraRoles;
+            extraRoles.forEach((role) => {
+              roleIDsArray.push(role.id);
             });
+          }
         }
-      
-      ocraRoles = await generateOCRARoles(selectedCompanyNameOption);
-      ocraRoles.forEach((role) => {
-        additionalRoles.push(role);
-        roleIDsArray.push(role.id);
-      });
+
+        const ocraRoles = await generateOCRARoles(selectedCompanyNameOption);
+        if (ocraRoles) {
+          ocraRoles.forEach((role) => {
+            additionalRoles.push(role);
+            roleIDsArray.push(role.id);
+          });
+        }
+      } catch (err) {
+        console.error("Error building additional Aureos roles:", err);
+      }
     }
 
     console.log("additionalRoles", additionalRoles);
     console.log("roleIDsArray", roleIDsArray);
-    document.getElementById("ACC_justification").disabled = false;
-    document.getElementById("ACC_Request_Form_btn").disabled = false;
 
-    await createRoleAccessDisplay(mainAureosRole)
+    if (mainAureosRole) {
+      await createRoleAccessDisplay(mainAureosRole)
+    }
   });
 });
 
@@ -117,6 +148,10 @@ function applyIfUntouched(el, value) {
 
 async function createRoleAccessDisplay(roleData) {
   const roleAccessDisplay = document.getElementById("roleAccessDisplay")
+  if (!roleData || !Array.isArray(roleData.folderAccess)) {
+    roleAccessDisplay.innerHTML = ""
+    return
+  }
   roleAccessDisplay.innerHTML = '<p>The role you have select will have access to the folders listed below</p>'
   const roleFolders = roleData.folderAccess.sort((a, b) => a.Value.localeCompare(b.Value))
   
