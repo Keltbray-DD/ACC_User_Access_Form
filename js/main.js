@@ -32,11 +32,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     sessionStorage.setItem("selectedCompanyName", selectedCompanyNameOption);
 
     console.log(selectedCompanyNameOption, selectedCompanyIDOption);
-    // Guard the project lookup: if it misses, reading .buCode used to throw and
-    // abort the handler, so the role field never unlocked. Fall back to no
-    // bu_code (filterRoles just matches nothing extra) rather than crashing.
+    // Roles are tagged to the user's business unit (i.e. the selected company),
+    // not the project's BU. The same role can exist once per BU (e.g. "Temporary
+    // Works Co-ordinator" for both Aureos Renewables and Aureos Transmission),
+    // each with different folder/admin access. Match the role list against the
+    // SELECTED COMPANY's BU code so an "Aureos Transmission" user gets the
+    // Transmission-tagged roles even when the project is coded to another BU.
+    //
+    // Guard both lookups: if either misses, reading .buCode / .bu_code used to
+    // throw and abort the handler, so the role field never unlocked. Fall back
+    // to the project's buCode (and then to no bu_code) rather than crashing.
     const selectedProjectDetails = ProjectList.filter(item => item.ProjectID == selectedProjectIDOption)
-    const buCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
+    const projectBuCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
+    const matchedCompanyBU = aureosBUs.filter(item => item.bu_name == selectedCompanyNameOption)
+    const buCode = (matchedCompanyBU[0] && matchedCompanyBU[0].bu_code) || projectBuCode;
     const filteredRoles = await filterRoles(rolesData, selectedCompanyNameOption, buCode)
     await populateRoles(filteredRoles)
 
