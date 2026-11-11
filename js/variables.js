@@ -1,5 +1,5 @@
 const appName = "Forma Access Request";
-const appVersion = "v1.7.3";
+const appVersion = "v1.7.4";
 
 const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
@@ -48,3 +48,24 @@ let aureosCompanyList = [
     {code:"SPC", name:"Aureos SP&C"},
     {code:"EWX", name:"Aureos Electricityworx"},
 ]
+
+// Aureos Rail used to be a single BU coded "AUR". It has since been split into
+// six discipline BUs (OLE, AEP, AEC, SPC, ART, ARL), all still named
+// "Aureos Rail". The shared Rail OCRA and project-admin roles in ACC are still
+// coded under the original "AUR", so any Rail discipline must be collapsed back
+// to "AUR" when building those role names or matching a user's BU to a project.
+// Detection keys off the company NAME ("Aureos Rail"), not the code, so the
+// Rail "SPC" discipline is never confused with the separate "Aureos SP&C" BU.
+const RAIL_BU_CODE = "AUR";
+const RAIL_DISCIPLINE_CODES = ["OLE", "AEP", "AEC", "SPC", "ART", "ARL"];
+
+function isRailCompany(companyName) {
+    return typeof companyName === "string" &&
+        companyName.toLowerCase().includes("rail");
+}
+
+// BU code to use for role lookups/filtering (role dropdown, AUR_* OCRA roles,
+// project-admin matching): AUR for any Rail company, otherwise the BU's own code.
+function resolveBuCode(companyName, buCode) {
+    return isRailCompany(companyName) ? RAIL_BU_CODE : buCode;
+}

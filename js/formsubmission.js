@@ -196,10 +196,14 @@ async function postUserToSP(){
     const role = rolesData.find(p => p.role === selectedRole);
     companyCode = aureosBUs.find(r => r.bu_name === companyName)
     console.log(companyCode)
+    // Rail was split into six discipline BUs (OLE/AEP/AEC/SPC/ART/ARL), but the
+    // Rail OCRA roles in ACC are still coded under the original "AUR". Collapse
+    // any Rail company back to AUR so its OCRA roles resolve to AUR_OCRA_*.
+    const ocraBuCode = resolveBuCode(companyName, companyCode && companyCode.bu_code)
     if (role) {
       const result = role.ocraRoles.map(roleName => {
         console.log(roleName)
-        const combinedName = `${companyCode.bu_code}_OCRA_${roleName.Value}`
+        const combinedName = `${ocraBuCode}_OCRA_${roleName.Value}`
         console.log(combinedName)
         const accRole = accRoles.find(r => r.name === combinedName);
         return accRole ? { name: combinedName, id: accRole.id } : null;

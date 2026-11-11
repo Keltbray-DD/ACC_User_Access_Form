@@ -45,7 +45,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const selectedProjectDetails = ProjectList.filter(item => item.ProjectID == selectedProjectIDOption)
     const projectBuCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
     const matchedCompanyBU = aureosBUs.filter(item => item.bu_name == selectedCompanyNameOption)
-    const buCode = (matchedCompanyBU[0] && matchedCompanyBU[0].bu_code) || projectBuCode;
+    // Rail split into six discipline BUs, but the Rail roles are still tagged to
+    // the original "AUR" code. Picking matchedCompanyBU[0] would grab an arbitrary
+    // discipline (OLE/AEP/...) and filter the dropdown to just that slice, so
+    // collapse any Rail company back to AUR to show the full Rail role list.
+    const rawBuCode = (matchedCompanyBU[0] && matchedCompanyBU[0].bu_code) || projectBuCode;
+    const buCode = resolveBuCode(selectedCompanyNameOption, rawBuCode);
     const filteredRoles = await filterRoles(rolesData, selectedCompanyNameOption, buCode)
     await populateRoles(filteredRoles)
 
@@ -84,8 +89,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     ) {
       try {
         const selectedAureosBU = aureosBUs.filter(item => item.bu_name == selectedCompanyNameOption)
-        const projectBuCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
-        const aureosBuCode = selectedAureosBU[0] && selectedAureosBU[0].bu_code;
+        const rawProjectBuCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
+        // Rail was split into six discipline BUs (OLE/AEP/AEC/SPC/ART/ARL) but
+        // aureosBUs now holds one entry per discipline, so matching the project's
+        // BU code against a single Rail BU code no longer works. When the company
+        // is Rail, collapse both sides to "AUR" so a Rail user on any Rail-coded
+        // project (any of the six) still receives the Rail project-admin roles.
+        const companyIsRail = isRailCompany(selectedCompanyNameOption);
+        const projectBuCode = (companyIsRail && RAIL_DISCIPLINE_CODES.includes(rawProjectBuCode))
+          ? RAIL_BU_CODE
+          : rawProjectBuCode;
+        const aureosBuCode = companyIsRail
+          ? RAIL_BU_CODE
+          : (selectedAureosBU[0] && selectedAureosBU[0].bu_code);
         console.log(projectBuCode, aureosBuCode)
         if (projectBuCode && aureosBuCode && projectBuCode == aureosBuCode) {
           const extraRoles = await generateAdditionalRoles();
