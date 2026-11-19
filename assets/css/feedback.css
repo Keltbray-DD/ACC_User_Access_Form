@@ -1,133 +1,148 @@
+/* ==========================================================================
+   Feedback widget — Aureos design system (tokens come from main.css :root).
+   Form-control rules are scoped to #feedbackModal so they no longer leak into
+   the main form's inputs/selects.
+   ========================================================================== */
+
+/* Floating "report a bug" button */
 #feedbackBtn {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #28a745;
-    color: white;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    z-index: 1001;
-    /* NEW: Flex to center icon */
+    background: var(--navy, #1d1e4e);
+    color: #fff;
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-#feedbackBtn:hover{
-    transform: scale(1.05);
-}
-
-/* Modal Styles */
-.modal {
-    display: none; 
-    position: fixed;
-    z-index: 999; 
-    padding-top: 100px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%; 
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4); 
+    text-decoration: none;
+    cursor: pointer;
     z-index: 1001;
+    box-shadow: 0 6px 24px rgba(29, 30, 78, 0.24);
+    transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), background 120ms;
+}
+
+#feedbackBtn:hover {
+    transform: translateY(-2px) scale(1.05);
+    background: var(--navy-strong, #13143a);
+}
+
+/* Modal shell */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1002;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding-top: 90px;
+    background: rgba(19, 20, 58, 0.45);
 }
 
 .feedback-content {
-    background-color: #fefefe;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface, #fff);
     margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 10px;
+    padding: 24px 24px 20px;
+    border: 1px solid var(--border, #dfe1e7);
+    border-radius: var(--radius, 3px);
+    box-shadow: var(--shadow, 0 6px 24px rgba(29, 30, 78, 0.12));
+    width: 90%;
+    max-width: 480px;
+}
+/* signature gradient line */
+.feedback-content::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: var(--gradient, linear-gradient(90deg, #0d4f8b, #19a3dc, #22a95b, #a6ce39));
+}
+
+.feedback-content h2 {
+    margin: 2px 0 14px;
+    color: var(--navy, #1d1e4e);
+    font-size: 18px;
 }
 
 .close {
-    color: #aaa;
+    color: var(--muted, #6b6f86);
     float: right;
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: var(--navy, #1d1e4e);
     text-decoration: none;
-    cursor: pointer;
 }
 
-textarea, input[type="file"], input[type="email"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-#feedbackForm{
+#feedbackForm {
     display: block;
-}
-
-/* Style for the submit button */
-.feedbackBtn {
-    background-color: #4CAF50;
-    /* Green */
-    font-size: 20px;
-    color: white;
-    padding: 12px 10px;
-    /* Adjust vertical padding */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 90%;
-    /* Set width to 50% */
-    margin: 10px auto;
-    /* Center horizontally */
-    display: block;
-    /* Make it a block element */
-
-    transition: background-color 0.3s;
-}
-
-.feedbackBtn:hover {
-    background-color: #45a049;
-    /* Darker green */
-}
-
-.feedbackBtn:active {
-    background-color: #3e8e41;
-    /* Slightly darker green */
-}
-
-.feedbackBtn:disabled {
-    opacity: 0.5;
-    /* Example: Reduce opacity to indicate it's disabled */
-    cursor: not-allowed;
-    /* Example: Change cursor to indicate it's not clickable */
-    /* Add any other styles to visually indicate the button is disabled */
-}
-
-/* Styles for the select dropdowns */
-select {
-    width: calc(100% - 20px);
-    /* 100% minus the padding */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    /*appearance: none;*/
-    /*background-image: linear-gradient(45deg, transparent 50%, #ccc 50%), linear-gradient(135deg, #ccc 50%, transparent 50%);*/
-    background-position: calc(100% - 10px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
 }
 
 #feedbackForm label {
-    display: block;   /* Makes margin-bottom work properly */
-    margin-bottom: 8px;
-    margin-top: 8px;
-    font-weight: bold;
+    display: block;
+    margin: 12px 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text, #24253a);
 }
+
+/* Scoped form controls (do not leak into the main form) */
+#feedbackModal select,
+#feedbackModal textarea,
+#feedbackModal input[type="email"],
+#feedbackModal input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #dfe1e7);
+    border-radius: var(--radius, 3px);
+    background: var(--surface, #fff);
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 180ms, box-shadow 180ms;
+}
+
+#feedbackModal select { height: 38px; }
+#feedbackModal textarea { resize: vertical; min-height: 110px; }
+#feedbackModal input[type="file"] { padding: 8px 12px; }
+
+#feedbackModal select:focus,
+#feedbackModal textarea:focus,
+#feedbackModal input[type="email"]:focus {
+    border-color: var(--navy, #1d1e4e);
+    box-shadow: 0 0 0 3px var(--navy-soft, #eef0f7);
+}
+
+/* Submit button — navy primary */
+.feedbackBtn {
+    width: 100%;
+    margin: 18px 0 0;
+    height: 42px;
+    padding: 0 16px;
+    background: var(--navy, #1d1e4e);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid var(--navy, #1d1e4e);
+    border-radius: var(--radius, 3px);
+    cursor: pointer;
+    display: block;
+    transition: background 120ms, transform 120ms;
+}
+
+.feedbackBtn:hover { background: var(--navy-strong, #13143a); }
+.feedbackBtn:active { transform: translateY(1px); }
+.feedbackBtn:disabled { opacity: 0.5; cursor: not-allowed; }

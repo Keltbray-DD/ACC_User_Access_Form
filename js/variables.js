@@ -1,5 +1,5 @@
 const appName = "Forma Access Request";
-const appVersion = "v1.7.4";
+const appVersion = "v1.8.0";
 
 const hubID = "b.24d2d632-e01b-4ca0-b988-385be827cb04"
 const account_id = "24d2d632-e01b-4ca0-b988-385be827cb04"
@@ -32,7 +32,30 @@ let selectedCompanyNameOption
 let selectedProjectNameOption
 let selectedProjectIDOption
 
+// Multi-project selection. Each entry:
+//   { ProjectID, ProjectName, buCode, companies:[{name,id}], approvers:{PM,AA,DC}|null,
+//     loading:bool, error:null|'noApprovers'|'loadFailed' }
+// This array (not a single <select> value) is the source of truth for which
+// projects a user is requesting access to. One access request is submitted per
+// entry, routed to that project's own approvers.
+let selectedProjects = []
+
+// Whether the entered email has been accepted (valid business email or
+// overridden). Gates the Company dropdown together with having projects.
+let emailAccepted = false
+
 let accessToken;
+
+// Small HTML-escape helper so project names / approver emails can be rendered
+// into innerHTML safely.
+function escapeHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 let aureosCompanyList = [
     {code:"AID", name:"Aureos IDEC"},

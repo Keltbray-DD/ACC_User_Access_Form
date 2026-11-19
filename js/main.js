@@ -3,53 +3,35 @@ document.addEventListener("DOMContentLoaded", async function () {
   roleDropdown = document.getElementById("ACC_input_5");
   projectDropdown = document.getElementById('ACC_project_input');
 
-    projectDropdown.addEventListener('change', function () {
-        selectedProjectNameOption = projectDropdown.options[projectDropdown.selectedIndex].innerText;
-        sessionStorage.setItem('selectedProjectName', selectedProjectNameOption);
-
-        selectedProjectIDOption = projectDropdown.value;
-        sessionStorage.setItem('selectedProjectID', selectedProjectIDOption);
-
-        console.log(selectedProjectNameOption, selectedProjectIDOption)
-
-        document.getElementById('ACC_first_6').disabled = false
-        document.getElementById('ACC_last_6').disabled = false
-        document.getElementById('ACC_input_7').disabled = false
-
-        // If the email is already filled (e.g. starting another request for
-        // yourself), re-validate it so the company field unlocks without retyping.
-        const emailEl = document.getElementById('ACC_input_7');
-        if (emailEl.value && typeof validateEmail === 'function') validateEmail();
-
-    });
+  // Projects are multi-select (chips), handled by addProject / removeProject in
+  // getinfo.js — there is no native 'change' event on the hidden project select.
 
   companyDropdown.addEventListener("change", async function () {
-    let selectedCompanyIDOption =
-      companyDropdown.options[companyDropdown.selectedIndex].value;
-    sessionStorage.setItem("selectedCompanyID", selectedCompanyIDOption);
-    selectedCompanyNameOption =
-      companyDropdown.options[companyDropdown.selectedIndex].innerText;
+    // The Company dropdown is now a UNION across the selected projects, so its
+    // option value is the company NAME (project-specific IDs are resolved per
+    // project at submit time).
+    selectedCompanyNameOption = companyDropdown.value;
     sessionStorage.setItem("selectedCompanyName", selectedCompanyNameOption);
 
-    console.log(selectedCompanyNameOption, selectedCompanyIDOption);
-    // Roles are tagged to the user's business unit (i.e. the selected company),
-    // not the project's BU. The same role can exist once per BU (e.g. "Temporary
-    // Works Co-ordinator" for both Aureos Renewables and Aureos Transmission),
-    // each with different folder/admin access. Match the role list against the
-    // SELECTED COMPANY's BU code so an "Aureos Transmission" user gets the
-    // Transmission-tagged roles even when the project is coded to another BU.
-    //
-    // Guard both lookups: if either misses, reading .buCode / .bu_code used to
-    // throw and abort the handler, so the role field never unlocked. Fall back
-    // to the project's buCode (and then to no bu_code) rather than crashing.
-    const selectedProjectDetails = ProjectList.filter(item => item.ProjectID == selectedProjectIDOption)
-    const projectBuCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
+    // Changing (or clearing) the company invalidates any previously chosen role.
+    if (typeof resetCompanyDownstream === "function") resetCompanyDownstream();
+    selectedCompanyNameOption = companyDropdown.value;
+
+    if (!selectedCompanyNameOption) return;
+
+    console.log(selectedCompanyNameOption);
+    // Roles are tagged to the user's business unit (i.e. the selected company).
+    // The same role can exist once per BU (e.g. "Temporary Works Co-ordinator"
+    // for both Aureos Renewables and Aureos Transmission), each with different
+    // folder/admin access. Match the role list against the SELECTED COMPANY's
+    // BU code. Guard the lookup: if it misses, fall back to no bu_code rather
+    // than crashing.
     const matchedCompanyBU = aureosBUs.filter(item => item.bu_name == selectedCompanyNameOption)
     // Rail split into six discipline BUs, but the Rail roles are still tagged to
     // the original "AUR" code. Picking matchedCompanyBU[0] would grab an arbitrary
     // discipline (OLE/AEP/...) and filter the dropdown to just that slice, so
     // collapse any Rail company back to AUR to show the full Rail role list.
-    const rawBuCode = (matchedCompanyBU[0] && matchedCompanyBU[0].bu_code) || projectBuCode;
+    const rawBuCode = matchedCompanyBU[0] && matchedCompanyBU[0].bu_code;
     const buCode = resolveBuCode(selectedCompanyNameOption, rawBuCode);
     const filteredRoles = await filterRoles(rolesData, selectedCompanyNameOption, buCode)
     await populateRoles(filteredRoles)
@@ -58,78 +40,27 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   roleDropdown.addEventListener("change", async function () {
-    additionalRoles = [];
-    roleIDsArray = [];
+    // The role + justification are shared across every selected project; the
+    // project-specific role payload (project-admin / OCRA roles, which depend on
+    // each project's BU) is built per project at submit time in formsubmission.js.
+    if (!roleDropdown.value) {
+      document.getElementById("ACC_justification").disabled = true;
+      document.getElementById("ACC_Request_Form_btn").disabled = true;
+      document.getElementById("roleAccessDisplay").innerHTML = "";
+      return;
+    }
 
-    // Unlock the final step up front. Everything below is optional enrichment of
-    // the request payload (additional / OCRA roles, access display) that depends
-    // on data lookups which can legitimately miss; a miss must never leave the
-    // user with a role selected but justification + Submit still greyed out.
+    // Unlock the final step. The access-display lookup below can legitimately
+    // miss; a miss must never leave the user with a role selected but
+    // justification + Submit still greyed out.
     document.getElementById("ACC_justification").disabled = false;
     document.getElementById("ACC_Request_Form_btn").disabled = false;
 
-    const mainRole = accRoles.find((r) => r.name === roleDropdown.value);
     const mainAureosRole = rolesData.find((r) => r.role === roleDropdown.value);
-
-    // Only add the main ACC role id when we actually matched one. A name
-    // mismatch between the Aureos role list and the ACC role list used to throw
-    // on mainRole.id and abort the handler before the unlock above ran.
-    if (mainRole) {
-      additionalRoles.push({ name: roleDropdown.value, id: mainRole.id });
-      roleIDsArray.push(mainRole.id);
-    } else {
-      console.warn("No matching ACC role found for", roleDropdown.value);
-    }
-
-    const selectedProjectDetails = ProjectList.filter(item => item.ProjectID == selectedProjectIDOption)
-
-    if (
-      selectedCompanyNameOption &&
-      selectedCompanyNameOption.includes("Aureos")
-    ) {
-      try {
-        const selectedAureosBU = aureosBUs.filter(item => item.bu_name == selectedCompanyNameOption)
-        const rawProjectBuCode = selectedProjectDetails[0] && selectedProjectDetails[0].buCode;
-        // Rail was split into six discipline BUs (OLE/AEP/AEC/SPC/ART/ARL) but
-        // aureosBUs now holds one entry per discipline, so matching the project's
-        // BU code against a single Rail BU code no longer works. When the company
-        // is Rail, collapse both sides to "AUR" so a Rail user on any Rail-coded
-        // project (any of the six) still receives the Rail project-admin roles.
-        const companyIsRail = isRailCompany(selectedCompanyNameOption);
-        const projectBuCode = (companyIsRail && RAIL_DISCIPLINE_CODES.includes(rawProjectBuCode))
-          ? RAIL_BU_CODE
-          : rawProjectBuCode;
-        const aureosBuCode = companyIsRail
-          ? RAIL_BU_CODE
-          : (selectedAureosBU[0] && selectedAureosBU[0].bu_code);
-        console.log(projectBuCode, aureosBuCode)
-        if (projectBuCode && aureosBuCode && projectBuCode == aureosBuCode) {
-          const extraRoles = await generateAdditionalRoles();
-          if (extraRoles) {
-            additionalRoles = extraRoles;
-            extraRoles.forEach((role) => {
-              roleIDsArray.push(role.id);
-            });
-          }
-        }
-
-        const ocraRoles = await generateOCRARoles(selectedCompanyNameOption);
-        if (ocraRoles) {
-          ocraRoles.forEach((role) => {
-            additionalRoles.push(role);
-            roleIDsArray.push(role.id);
-          });
-        }
-      } catch (err) {
-        console.error("Error building additional Aureos roles:", err);
-      }
-    }
-
-    console.log("additionalRoles", additionalRoles);
-    console.log("roleIDsArray", roleIDsArray);
-
     if (mainAureosRole) {
-      await createRoleAccessDisplay(mainAureosRole)
+      await createRoleAccessDisplay(mainAureosRole);
+    } else {
+      document.getElementById("roleAccessDisplay").innerHTML = "";
     }
   });
 });

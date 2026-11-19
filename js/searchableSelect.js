@@ -43,8 +43,21 @@ function makeSearchableSelect(cfg) {
     if (rows[activeIdx]) rows[activeIdx].scrollIntoView({ block: "nearest" });
   }
 
-  // Commit a pick: reflect the name in the box and drive the hidden <select>.
+  // Commit a pick. In single mode: reflect the name in the box and drive the
+  // hidden <select>. In multi mode: hand the pick to cfg.onCommit (which tracks
+  // it elsewhere, e.g. as a chip), clear the search box and keep the list open
+  // so more picks can be made in a row.
   function commit(opt) {
+    if (cfg.multi) {
+      if (typeof cfg.onCommit === "function") cfg.onCommit(opt);
+      // Keep the current search text and the list open so the user can pick
+      // several matches from one search without re-typing. The just-picked row
+      // is re-rendered with a ✓ (click again to remove it).
+      renderList(input.value);
+      list.hidden = false;
+      input.focus();
+      return;
+    }
     input.value = opt.name;
     close();
     if (select.value !== opt.value) {
@@ -64,13 +77,17 @@ function makeSearchableSelect(cfg) {
       return;
     }
     list.innerHTML = "";
+    const selectedCheck = cfg.multi && typeof cfg.isSelected === "function";
     matches.slice(0, 200).forEach((o) => {
       const row = document.createElement("div");
       row.className = "combo-row";
+      const already = selectedCheck && cfg.isSelected(o.value);
+      if (already) row.classList.add("combo-row--selected");
 
       const main = document.createElement("div");
       main.className = "combo-row__main";
-      main.textContent = o.name;
+      // In multi mode, show a tick in front of rows that are already chosen.
+      main.textContent = already ? "✓ " + o.name : o.name;
       row.appendChild(main);
 
       if (o.sub) {
@@ -81,7 +98,16 @@ function makeSearchableSelect(cfg) {
       }
 
       row.addEventListener("mousedown", (ev) => ev.preventDefault()); // keep input focus on click
-      row.addEventListener("click", () => commit(o));
+      // Clicking an already-selected row removes it; otherwise it commits.
+      if (already) {
+        row.addEventListener("click", () => {
+          if (typeof cfg.onRemove === "function") cfg.onRemove(o);
+          renderList(input.value);
+          input.focus();
+        });
+      } else {
+        row.addEventListener("click", () => commit(o));
+      }
       list.appendChild(row);
     });
   }
@@ -95,7 +121,14 @@ function makeSearchableSelect(cfg) {
     else if (e.key === "Enter") { e.preventDefault(); if (rows[activeIdx]) rows[activeIdx].click(); }
     else if (e.key === "Escape") { close(); }
   });
-  document.addEventListener("click", (e) => { if (!combo.contains(e.target)) close(); });
+  document.addEventListener("click", (e) => {
+    // Ignore clicks whose target was removed from the DOM by a re-render — in
+    // multi mode, picking a row rebuilds the list and detaches the clicked row,
+    // so testing combo.contains() on it would wrongly read as an outside click
+    // and close the list. A detached target is never a genuine outside click.
+    if (!document.contains(e.target)) return;
+    if (!combo.contains(e.target)) close();
+  });
 
   // Keep the box in step with the select: enabled only when the select is
   // enabled and has options; text follows the committed selection.
@@ -103,7 +136,9 @@ function makeSearchableSelect(cfg) {
     const count = options().length;
     const ready = !select.disabled && count > 0;
     input.disabled = !ready;
-    input.value = selectedText();
+    // In multi mode the box is a search field that clears after each pick, so
+    // never stamp a single "selected" value into it; selections live as chips.
+    if (!cfg.multi) input.value = selectedText();
     input.placeholder = ready ? cfg.searchLabel + " " + count + "…" : cfg.waitingPlaceholder;
   }
   new MutationObserver(sync).observe(select, {
@@ -118,6 +153,14 @@ document.addEventListener("DOMContentLoaded", function () {
   makeSearchableSelect({
     selectId: "ACC_project_input", inputId: "projectSearch", listId: "projectList", comboId: "projectCombo",
     searchLabel: "Search", waitingPlaceholder: "Loading projects…",
+    // Projects are multi-select: each pick becomes a chip and drives one access
+    // request. addProject / removeProject / selectedProjects live in getinfo.js.
+    multi: true,
+    onCommit: (opt) => { if (typeof addProject === "function") addProject(opt.value, opt.name); },
+    onRemove: (opt) => { if (typeof removeProject === "function") removeProject(opt.value); },
+    isSelected: (value) =>
+      typeof selectedProjects !== "undefined" &&
+      selectedProjects.some((p) => p.ProjectID === value),
   });
   makeSearchableSelect({
     selectId: "ACC_company_input", inputId: "companySearch", listId: "companyList", comboId: "companyCombo",
